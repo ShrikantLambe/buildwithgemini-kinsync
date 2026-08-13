@@ -817,6 +817,10 @@
   </nav>
 
   <div class="header-actions">
+    <button class="btn-maps-link" id="btn-privacy-toggle" onclick="togglePrivacyMode()" style="background:rgba(139,92,246,0.18); border:1px solid rgba(139,92,246,0.4); color:#D8B4FE; font-weight:700; cursor:pointer; gap:0.4rem; padding:0.5rem 0.85rem;" title="Hide Sensitive Dates & Personal Notes">
+      <span class="material-symbols-outlined" style="font-size:1.05rem;" id="privacy-icon">visibility</span>
+      <span id="privacy-label">Hide Sensitive Dates</span>
+    </button>
     <div class="household-badge">
       <span class="status-dot"></span>
       Sarah & Mark's Household
@@ -1358,6 +1362,31 @@ function toggleAIDrawer(open) {
   }
 }
 
+/* PRIVACY MODE STATE */
+let isPrivacyMode = false;
+
+function togglePrivacyMode() {
+  isPrivacyMode = !isPrivacyMode;
+  const btnIcon = document.getElementById('privacy-icon');
+  const btnLabel = document.getElementById('privacy-label');
+  const btn = document.getElementById('btn-privacy-toggle');
+
+  if (isPrivacyMode) {
+    btnIcon.textContent = 'visibility_off';
+    btnLabel.textContent = 'Privacy: ON (Dates Hidden)';
+    btn.style.background = 'rgba(239, 68, 68, 0.25)';
+    btn.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+    btn.style.color = '#FCA5A5';
+  } else {
+    btnIcon.textContent = 'visibility';
+    btnLabel.textContent = 'Hide Sensitive Dates';
+    btn.style.background = 'rgba(139, 92, 246, 0.18)';
+    btn.style.borderColor = 'rgba(139, 92, 246, 0.4)';
+    btn.style.color = '#D8B4FE';
+  }
+  renderUI();
+}
+
 /* RENDERERS */
 function renderUI() {
   document.getElementById('stat-total-events').textContent = stateEvents.length;
@@ -1420,9 +1449,11 @@ function renderTimeline() {
     const rainAlert = ev.weather?.rainAlert;
     const weatherAdvice = ev.weather?.advice;
 
+    const displayDate = isPrivacyMode ? '🔒 Sensitive Date Hidden' : ev.date;
+
     card.innerHTML = `
       <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem; flex-wrap:wrap;">
-        <span class="time-badge-pill">${ev.date} • ${ev.startTime} – ${ev.endTime}</span>
+        <span class="time-badge-pill" style="${isPrivacyMode ? 'background:rgba(239,68,68,0.2); color:#FCA5A5; border:1px solid rgba(239,68,68,0.4);' : ''}">${displayDate} • ${ev.startTime} – ${ev.endTime}</span>
         <div style="display:flex; align-items:center; gap:0.55rem;">
           ${isCancelled ? `<span class="status-cancelled-badge">❌ Cancelled</span>` : ''}
           <span style="font-size:0.75rem; text-transform:uppercase; font-weight:800; color:var(--text-muted); letter-spacing:0.06em;">${ev.category}</span>
@@ -1486,6 +1517,8 @@ function renderRoster() {
     const card = document.createElement('div');
     card.className = 'roster-card';
 
+    const displayBirthday = isPrivacyMode ? '🔒 Sensitive Date Hidden' : m.birthday;
+
     card.innerHTML = `
       <div style="display:flex; align-items:center; gap:1.15rem;">
         <div class="avatar-box" style="background:${m.color};">${m.name.charAt(0)}</div>
@@ -1499,7 +1532,7 @@ function renderRoster() {
       </div>
       <div style="font-size:0.82rem; background:rgba(10,15,28,0.8); padding:0.55rem 0.85rem; border-radius:12px; color:var(--text-muted); display:flex; justify-content:space-between; border:1px solid rgba(255,255,255,0.05);">
         <span>🎂 Birthday</span>
-        <span style="font-weight:700; color:var(--text-body);">${m.birthday}</span>
+        <span style="font-weight:700; color:${isPrivacyMode ? '#FCA5A5' : 'var(--text-body)'};">${displayBirthday}</span>
       </div>
     `;
 
