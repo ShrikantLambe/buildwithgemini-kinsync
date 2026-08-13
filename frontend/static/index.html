@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KinSync — Family Logistics & Calendar Command</title>
+
+<!-- Modern Google Fonts & Material Symbols -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,500,0,0">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<style>
+  :root {
+    --bg-void: #060810;
+    --bg-surface: rgba(16, 23, 42, 0.65);
+    --bg-surface-hover: rgba(24, 34, 58, 0.85);
+    --bg-elevated: rgba(30, 41, 59, 0.7);
+    
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-accent: rgba(99, 102, 241, 0.4);
+    --border-glow: rgba(6, 182, 212, 0.5);
+
+    --primary: #6366F1;
+    --primary-glow: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+    --cyan-glow: linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%);
+    --emerald-glow: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    --amber-glow: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    --rose-glow: linear-gradient(135deg, #F43F5E 0%, #E11D48 100%);
+
+    --text-heading: #FFFFFF;
+    --text-body: #E2E8F0;
+    --text-muted: #94A3B8;
+    --text-dim: #64748B;
+
+    --shadow-soft: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 35px rgba(99, 102, 241, 0.2);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-void);
+    background-image: 
+      radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.12) 0%, transparent 45%),
+      radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.12) 0%, transparent 40%),
+      radial-gradient(circle at 50% 85%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+    color: var(--text-body);
+    font-size: 15px;
+    line-height: 1.6;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* SLICK HEADER NAVBAR */
+  header {
+    background: rgba(10, 14, 26, 0.85);
+    backdrop-filter: blur(24px) saturate(180%);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.9rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 50;
+  }
+
+  .brand-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .brand-logo-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--cyan-glow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 0 25px rgba(6, 182, 212, 0.4);
+  }
+
+  .brand-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: var(--text-heading);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .brand-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  /* NAV PILLS CONTROL */
+  .nav-center-pills {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(18, 25, 45, 0.7);
+    border: 1px solid var(--border-subtle);
+    padding: 0.3rem;
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .nav-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 0.6rem 1.15rem;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .nav-btn:hover {
+    color: var(--text-heading);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .nav-btn.active {
+    background: var(--primary-glow);
+    color: #FFFFFF;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+  }
+
+  /* RIGHT HEADER CONTROLS */
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .household-badge {
+    background: rgba(30, 41, 59, 0.6);
+    border: 1px solid var(--border-subtle);
+    padding: 0.45rem 0.85rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-heading);
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10B981;
+    box-shadow: 0 0 10px #10B981;
+  }
+
+  .btn-ai-trigger {
+    background: var(--cyan-glow);
+    color: #FFFFFF;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 12px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 0 25px rgba(6, 182, 212, 0.35);
+    transition: all 0.2s ease;
+  }
+
+  .btn-ai-trigger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 35px rgba(6, 182, 212, 0.55);
+  }
+
+  /* MAIN VIEWPORT */
+  .app-viewport {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2.25rem 3rem;
+    max-width: 1540px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .tab-content {
+    display: none;
+    animation: slideUpFade 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  @keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SLICK HERO BANNER */
+  .hero-card {
+    background: linear-gradient(135deg, rgba(26, 35, 58, 0.7) 0%, rgba(15, 21, 38, 0.85) 100%);
+    border: 1px solid var(--border-subtle);
+    border-radius: 24px;
+    padding: 2.25rem 2.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .hero-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.6), transparent);
+  }
+
+  .hero-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-heading);
+    letter-spacing: -0.01em;
+    margin-bottom: 0.35rem;
+  }
+
+  .hero-sub {
+    font-size: 1.02rem;
+    color: var(--text-muted);
+  }
+
+  /* STAT CARDS GRID */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2.25rem;
+  }
+
+  .metric-card {
+    background: var(--bg-surface);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    transition: all 0.25s ease;
+  }
+
+  .metric-card:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-3px);
+  }
+
+  .metric-icon-box {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+  }
+
+  .metric-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--text-heading);
+    line-height: 1.1;
+  }
+
+  .metric-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  /* EXECUTIVE BRIEF & DRIVERS CONTAINER */
+  .brief-grid-container {
+    display: grid;
+    grid-template-columns: 1.85fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .glass-panel {
+    background: var(--bg-surface);
+    backdrop-filter: blur(24px);
+    border: 1px solid var(--border-subtle);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .panel-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .panel-heading {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--text-heading);
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  /* SLICK DRIVER & CHECKLIST CARDS */
+  .driver-item-card {
+    background: rgba(10, 15, 28, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.85rem;
+    transition: all 0.2s ease;
+  }
+
+  .driver-item-card:hover {
+    border-color: rgba(6, 182, 212, 0.4);
+    transform: translateX(3px);
+  }
+
+  .driver-name-text {
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: #38BDF8;
+  }
+
+  .driver-assignment {
+    font-size: 0.88rem;
+    color: var(--text-body);
+  }
+
+  /* SCHEDULE FILTER BAR */
+  .controls-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.75rem;
+    background: rgba(15, 22, 40, 0.7);
+    border: 1px solid var(--border-subtle);
+    padding: 0.85rem 1.25rem;
+    border-radius: 20px;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .chip-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .filter-pill {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-muted);
+    padding: 0.55rem 1.15rem;
+    border-radius: 12px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filter-pill.active, .filter-pill:hover {
+    background: var(--primary);
+    color: #FFFFFF;
+    border-color: var(--primary);
+    box-shadow: 0 4px 18px rgba(99, 102, 241, 0.35);
+  }
+
+  /* SLICK ACTIVITY CARDS / PILLS GRID */
+  .activities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .activity-card {
+    background: var(--bg-surface);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    border-radius: 22px;
+    padding: 1.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .activity-card:hover {
+    background: var(--bg-surface-hover);
+    border-color: var(--border-glow);
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(6, 182, 212, 0.15);
+  }
+
+  .time-badge-pill {
+    background: rgba(6, 182, 212, 0.12);
+    color: #38BDF8;
+    font-weight: 800;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 10px;
+    border: 1px solid rgba(6, 182, 212, 0.25);
+  }
+
+  .activity-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--text-heading);
+    letter-spacing: -0.01em;
+  }
+
+  .member-tag-pill {
+    font-size: 0.78rem;
+    font-weight: 800;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    color: #FFFFFF;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .btn-icon-edit {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--text-muted);
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+
+  .btn-icon-edit:hover {
+    background: rgba(6, 182, 212, 0.25);
+    color: #38BDF8;
+    border-color: #38BDF8;
+    transform: scale(1.08);
+  }
+
+  .btn-maps-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(6, 182, 212, 0.15);
+    border: 1px solid rgba(6, 182, 212, 0.35);
+    color: #38BDF8;
+    padding: 0.45rem 0.85rem;
+    border-radius: 12px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-maps-link:hover {
+    background: rgba(6, 182, 212, 0.35);
+    color: #FFFFFF;
+    border-color: #38BDF8;
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .drive-time-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: #FBBF24;
+    padding: 0.35rem 0.75rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  /* ROSTER GRID */
+  .roster-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+  }
+
+  .roster-card {
+    background: var(--bg-surface);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-subtle);
+    border-radius: 24px;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    transition: all 0.25s ease;
+  }
+
+  .roster-card:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-3px);
+  }
+
+  .avatar-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #FFFFFF;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  }
+
+  /* SLICK FORM STYLING */
+  .form-card {
+    background: var(--bg-surface);
+    backdrop-filter: blur(30px);
+    border: 1px solid var(--border-subtle);
+    border-radius: 26px;
+    padding: 2.5rem;
+    max-width: 860px;
+    margin: 0 auto;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  }
+
+  .form-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .input-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .label-text {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-body);
+    margin-bottom: 0.5rem;
+  }
+
+  .input-control {
+    width: 100%;
+    padding: 0.85rem 1.15rem;
+    background: rgba(10, 15, 28, 0.85);
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    color: var(--text-heading);
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+  }
+
+  .input-control:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  }
+
+  .btn-gradient-submit {
+    width: 100%;
+    padding: 1rem;
+    background: var(--primary-glow);
+    border: none;
+    border-radius: 14px;
+    color: #FFFFFF;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 1.05rem;
+    cursor: pointer;
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+    transition: all 0.2s ease;
+  }
+
+  .btn-gradient-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 45px rgba(99, 102, 241, 0.6);
+  }
+
+  /* SLICK MODAL & DRAWER */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 6, 14, 0.75);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .edit-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 90%;
+    max-width: 680px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: rgba(12, 18, 32, 0.98);
+    backdrop-filter: blur(30px);
+    border: 1px solid var(--border-accent);
+    border-radius: 26px;
+    padding: 2.25rem;
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8), 0 0 40px rgba(99, 102, 241, 0.2);
+    z-index: 102;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .edit-modal.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .ai-drawer {
+    position: fixed;
+    top: 0;
+    right: -520px;
+    width: 520px;
+    height: 100vh;
+    background: rgba(10, 15, 28, 0.98);
+    backdrop-filter: blur(30px);
+    border-left: 1px solid var(--border-subtle);
+    box-shadow: -20px 0 60px rgba(0, 0, 0, 0.7);
+    z-index: 101;
+    display: flex;
+    flex-direction: column;
+    transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .ai-drawer.open {
+    right: 0;
+  }
+
+  /* FLOATING AI FAB */
+  .fab-button {
+    position: fixed;
+    bottom: 2.5rem;
+    right: 3rem;
+    background: var(--cyan-glow);
+    color: #FFFFFF;
+    padding: 1rem 1.85rem;
+    border-radius: 35px;
+    border: none;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 1.05rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    box-shadow: 0 12px 35px rgba(6, 182, 212, 0.5), 0 0 20px rgba(6, 182, 212, 0.3);
+    z-index: 90;
+    transition: all 0.25s ease;
+  }
+
+  .fab-button:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 18px 45px rgba(6, 182, 212, 0.7), 0 0 30px rgba(6, 182, 212, 0.5);
+  }
+</style>
+</head>
+<body>
+
+<!-- SLICK HEADER -->
+<header>
+  <div class="brand-group">
+    <div class="brand-logo-box">⚡</div>
+    <div>
+      <div class="brand-title">KinSync</div>
+      <div class="brand-subtitle">Family Logistics & Calendar AI Hub</div>
+    </div>
+  </div>
+
+  <nav class="nav-center-pills">
+    <button class="nav-btn active" onclick="switchTab('tab-brief', this)">
+      <span class="material-symbols-outlined">dashboard</span> Executive Brief
+    </button>
+    <button class="nav-btn" onclick="switchTab('tab-schedule', this)">
+      <span class="material-symbols-outlined">calendar_month</span> Schedule & Activities
+    </button>
+    <button class="nav-btn" onclick="switchTab('tab-roster', this)">
+      <span class="material-symbols-outlined">groups</span> Family Roster
+    </button>
+    <button class="nav-btn" onclick="switchTab('tab-add', this)">
+      <span class="material-symbols-outlined">add_circle</span> Add Activity
+    </button>
+  </nav>
+
+  <div class="header-actions">
+    <div class="household-badge">
+      <span class="status-dot"></span>
+      Sarah & Mark's Household
+    </div>
+    <button class="btn-ai-trigger" onclick="toggleAIDrawer(true)">
+      <span class="material-symbols-outlined">auto_awesome</span> KinSync AI
+    </button>
+  </div>
+</header>
+
+<!-- MAIN APP VIEWPORT -->
+<main class="app-viewport">
+
+  <!-- TAB 1: EXECUTIVE BRIEF -->
+  <div id="tab-brief" class="tab-content active">
+    
+    <!-- HERO BANNER -->
+    <div class="hero-card">
+      <div>
+        <div class="hero-title">Good morning, Sarah & Mark! ☀️</div>
+        <div class="hero-sub">Here is your family logistics & activity brief for <strong>Friday, August 14, 2026</strong>.</div>
+      </div>
+      <button class="btn-ai-trigger" style="background: var(--primary-glow); box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);" onclick="triggerAIBrief()">
+        <span class="material-symbols-outlined">refresh</span> Refresh AI Brief
+      </button>
+    </div>
+
+    <!-- METRICS GRID -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-icon-box" style="background: rgba(99, 102, 241, 0.15); color: #818CF8;">📅</div>
+        <div>
+          <div class="metric-value" id="stat-total-events">16</div>
+          <div class="metric-label">Activities This Week</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon-box" style="background: rgba(6, 182, 212, 0.15); color: #38BDF8;">🚗</div>
+        <div>
+          <div class="metric-value">100%</div>
+          <div class="metric-label">Drivers Assigned</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon-box" style="background: rgba(16, 185, 129, 0.15); color: #34D399;">⚡</div>
+        <div>
+          <div class="metric-value" style="color: #34D399;">0 Conflicts</div>
+          <div class="metric-label">Schedule Health</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon-box" style="background: rgba(236, 72, 153, 0.15); color: #F472B6;">👨‍👩‍👧‍👦</div>
+        <div>
+          <div class="metric-value" id="stat-members-count">5</div>
+          <div class="metric-label">Family Members</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRIEF & DRIVER PANELS -->
+    <div class="brief-grid-container">
+      <div class="glass-panel">
+        <div class="panel-header-row">
+          <div class="panel-heading">
+            <span class="material-symbols-outlined" style="color: var(--border-glow);">auto_awesome</span>
+            Today's Timeline & AI Guidance
+          </div>
+          <span style="font-size: 0.85rem; color: #38BDF8; font-weight: 800;">Friday, Aug 14</span>
+        </div>
+        <div id="brief-rendered-content" style="font-size: 0.98rem; color: var(--text-body); line-height: 1.7;">
+          <div style="background:rgba(6, 182, 212, 0.1); border:1px solid rgba(6, 182, 212, 0.3); border-radius:14px; padding:0.75rem 1rem; margin-bottom:1.25rem; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">
+            <div style="display:flex; align-items:center; gap:0.55rem; font-size:0.88rem;">
+              <span class="material-symbols-outlined" style="color:#38BDF8;">home</span>
+              <span><strong>Home Base:</strong> 742 Evergreen Terrace, Palo Alto, CA 94301</span>
+            </div>
+            <a href="https://www.google.com/maps/dir/?api=1&origin=742+Evergreen+Terrace+Palo+Alto+CA+94301&destination=Palo+Alto+CA" target="_blank" class="btn-maps-link">
+              <span class="material-symbols-outlined" style="font-size:1rem;">map</span> Open Google Maps
+            </a>
+          </div>
+
+          <p style="margin-bottom:1rem;">Everything is set up smoothly for today! Here are your scheduled drop-offs, pickups, drive times, and evening plans:</p>
+          <div style="display:flex; flex-direction:column; gap:1rem;">
+            <div style="background:rgba(10, 15, 28, 0.7); padding:1rem 1.25rem; border-radius:16px; border:1px solid rgba(255,255,255,0.06);">
+              <div style="font-weight:800; color:#38BDF8; margin-bottom:0.4rem; display:flex; align-items:center; justify-content:space-between;">
+                <span>🌅 Morning School Drop-offs</span>
+                <span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Total Drive: ~20 mins</span>
+              </div>
+              <div>• <strong>08:30 AM:</strong> Dad drops off Leo @ Lincoln Elementary <span style="color:#FBBF24; font-weight:700;">(🚗 ~12 min drive from Home)</span></div>
+              <div>• <strong>09:00 AM:</strong> Dad drops off Maya @ Sunshine Preschool <span style="color:#FBBF24; font-weight:700;">(🚗 ~8 min drive from Lincoln)</span></div>
+            </div>
+
+            <div style="background:rgba(10, 15, 28, 0.7); padding:1rem 1.25rem; border-radius:16px; border:1px solid rgba(255,255,255,0.06);">
+              <div style="font-weight:800; color:#F472B6; margin-bottom:0.4rem; display:flex; align-items:center; justify-content:space-between;">
+                <span>☀️ Afternoon Pickups & Playdate</span>
+                <span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Total Drive: ~28 mins</span>
+              </div>
+              <div>• <strong>12:30 PM:</strong> Mom picks up Maya from preschool <span style="color:#FBBF24; font-weight:700;">(🚗 ~14 min drive from Home)</span></div>
+              <div>• <strong>01:00 PM:</strong> Mom drops Maya @ Emma's house for playdate <span style="color:#FBBF24; font-weight:700;">(🚗 ~6 min drive)</span></div>
+              <div>• <strong>03:00 PM:</strong> Mom picks up Leo from school; Grandma Helen picks up Maya <span style="color:#FBBF24; font-weight:700;">(🚗 ~12 min drive)</span></div>
+            </div>
+
+            <div style="background:rgba(10, 15, 28, 0.7); padding:1rem 1.25rem; border-radius:16px; border:1px solid rgba(255,255,255,0.06);">
+              <div style="font-weight:800; color:#FBBF24; margin-bottom:0.4rem; display:flex; align-items:center; justify-content:space-between;">
+                <span>⚽ Evening Sports & Family Pizza Night</span>
+                <span style="font-size:0.8rem; color:var(--text-muted); font-weight:600;">Total Drive: ~15 mins</span>
+              </div>
+              <div>• <strong>04:00 PM:</strong> Leo Soccer Practice (Dad drives <span style="color:#FBBF24; font-weight:700;">🚗 ~15 min drive from Home</span>); Mom Pilates</div>
+              <div>• <strong>06:30 PM:</strong> Friday Family Pizza & Movie Night (Inside Out 2) 🍕🍿</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <div class="panel-header-row" style="margin-bottom: 1rem; padding-bottom: 0.75rem;">
+            <div class="panel-heading" style="font-size: 1.15rem;">
+              <span class="material-symbols-outlined" style="color: #38BDF8;">directions_car</span> Drivers Today
+            </div>
+          </div>
+          <div class="driver-item-card">
+            <span class="driver-name-text">🚗 Dad (Mark)</span>
+            <span class="driver-assignment">School & Soccer</span>
+          </div>
+          <div class="driver-item-card">
+            <span class="driver-name-text" style="color:#F472B6;">🚙 Mom (Sarah)</span>
+            <span class="driver-assignment">Preschool & Playdate</span>
+          </div>
+          <div class="driver-item-card">
+            <span class="driver-name-text" style="color:#C084FC;">👵 Grandma Helen</span>
+            <span class="driver-assignment">3 PM Pickup</span>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <div class="panel-header-row" style="margin-bottom: 1rem; padding-bottom: 0.75rem;">
+            <div class="panel-heading" style="font-size: 1.15rem;">
+              <span class="material-symbols-outlined" style="color: #FBBF24;">backpack</span> Packing List
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:0.6rem; font-size:0.9rem; color:var(--text-body);">
+            <div style="display:flex; align-items:center; gap:0.6rem;">
+              <span class="material-symbols-outlined" style="color:#34D399; font-size:1.1rem;">check_circle</span>
+              Leo: Hot lunch & library book
+            </div>
+            <div style="display:flex; align-items:center; gap:0.6rem;">
+              <span class="material-symbols-outlined" style="color:#34D399; font-size:1.1rem;">check_circle</span>
+              Maya: Show & Tell stuffed animal
+            </div>
+            <div style="display:flex; align-items:center; gap:0.6rem;">
+              <span class="material-symbols-outlined" style="color:#34D399; font-size:1.1rem;">check_circle</span>
+              Leo: Blue jersey & shin guards
+            </div>
+            <div style="display:flex; align-items:center; gap:0.6rem;">
+              <span class="material-symbols-outlined" style="color:#34D399; font-size:1.1rem;">check_circle</span>
+              Mom: Grip socks for Pilates
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TAB 2: SCHEDULE & ACTIVITIES -->
+  <div id="tab-schedule" class="tab-content">
+    <div class="controls-bar">
+      <div class="chip-group" id="date-filter-group">
+        <span style="font-size:0.85rem; font-weight:700; color:var(--text-muted); margin-right:0.4rem;">Date:</span>
+        <button class="filter-pill active" onclick="filterDate('all', this)">All Days</button>
+        <button class="filter-pill" onclick="filterDate('2026-08-14', this)">Fri Aug 14</button>
+        <button class="filter-pill" onclick="filterDate('2026-08-15', this)">Sat Aug 15</button>
+        <button class="filter-pill" onclick="filterDate('2026-08-16', this)">Sun Aug 16</button>
+        <button class="filter-pill" onclick="filterDate('2026-08-17', this)">Mon Aug 17</button>
+      </div>
+
+      <div class="chip-group" id="member-filter-group">
+        <span style="font-size:0.85rem; font-weight:700; color:var(--text-muted); margin-right:0.4rem;">Member:</span>
+        <button class="filter-pill active" onclick="filterMember('all', this)">Everyone</button>
+        <button class="filter-pill" onclick="filterMember('Leo', this)">Leo</button>
+        <button class="filter-pill" onclick="filterMember('Maya', this)">Maya</button>
+        <button class="filter-pill" onclick="filterMember('Sarah', this)">Mom</button>
+        <button class="filter-pill" onclick="filterMember('Mark', this)">Dad</button>
+      </div>
+    </div>
+
+    <div class="activities-grid" id="events-timeline">
+      <!-- Rendered dynamically -->
+    </div>
+  </div>
+
+  <!-- TAB 3: FAMILY ROSTER -->
+  <div id="tab-roster" class="tab-content">
+    <div class="panel-header-row" style="margin-bottom: 2rem;">
+      <div class="panel-heading">
+        <span class="material-symbols-outlined" style="color: var(--border-glow);">groups</span>
+        Family Roster & Profiles
+      </div>
+      <button class="btn-ai-trigger" style="background: var(--cyan-glow);" onclick="switchTab('tab-add-member', null)">
+        <span class="material-symbols-outlined">person_add</span> Add Family Member
+      </button>
+    </div>
+
+    <div class="roster-grid" id="roster-grid">
+      <!-- Rendered dynamically -->
+    </div>
+  </div>
+
+  <!-- TAB 4: ADD ACTIVITY -->
+  <div id="tab-add" class="tab-content">
+    <div class="form-card">
+      <div class="panel-heading" style="font-size:1.5rem; margin-bottom: 2rem;">
+        <span class="material-symbols-outlined" style="color: var(--primary);">add_circle</span>
+        Schedule New Family Activity
+      </div>
+      <form onsubmit="handleCreateEvent(event)">
+        <div class="form-grid-2">
+          <div class="input-group">
+            <label class="label-text">Activity Title</label>
+            <input type="text" id="ev-title" class="input-control" placeholder="e.g. Leo Soccer Tournament" required>
+          </div>
+          <div class="input-group">
+            <label class="label-text">Date</label>
+            <input type="date" id="ev-date" class="input-control" value="2026-08-14" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="input-group">
+            <label class="label-text">Start Time</label>
+            <input type="time" id="ev-start" class="input-control" value="16:00" required>
+          </div>
+          <div class="input-group">
+            <label class="label-text">End Time</label>
+            <input type="time" id="ev-end" class="input-control" value="17:30" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="input-group">
+            <label class="label-text">Family Members (comma separated)</label>
+            <input type="text" id="ev-members" class="input-control" value="Leo, Dad (Mark)" required>
+          </div>
+          <div class="input-group">
+            <label class="label-text">Category</label>
+            <select id="ev-category" class="input-control">
+              <option value="sports">⚽ Sports</option>
+              <option value="school">🏫 School</option>
+              <option value="classes">🎨 Classes & Lessons</option>
+              <option value="playdates">🧸 Playdates</option>
+              <option value="fitness">🧘 Fitness</option>
+              <option value="family">🍕 Family Event</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="input-group">
+            <label class="label-text">Drop-off Driver</label>
+            <input type="text" id="ev-dropoff" class="input-control" placeholder="e.g. Dad (Mark)">
+          </div>
+          <div class="input-group">
+            <label class="label-text">Pick-up Driver</label>
+            <input type="text" id="ev-pickup" class="input-control" placeholder="e.g. Mom (Sarah)">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="input-group">
+            <label class="label-text">Location / Venue Street Address</label>
+            <input type="text" id="ev-location" class="input-control" placeholder="e.g. Lincoln Elementary, 500 Alma St, Palo Alto, CA">
+          </div>
+          <div class="input-group">
+            <label class="label-text">Estimated Drive Time from Home</label>
+            <input type="text" id="ev-traveltime" class="input-control" placeholder="e.g. 12 mins (3.4 mi)">
+          </div>
+        </div>
+
+        <div class="input-group" style="margin-bottom: 2rem;">
+          <label class="label-text">Packing Gear / Special Notes</label>
+          <input type="text" id="ev-notes" class="input-control" placeholder="e.g. Shin guards, water bottle">
+        </div>
+
+        <button type="submit" class="btn-gradient-submit">Add Activity & Sync AI</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- TAB 5: ADD MEMBER -->
+  <div id="tab-add-member" class="tab-content">
+    <div class="form-card" style="max-width: 650px;">
+      <div class="panel-heading" style="font-size:1.5rem; margin-bottom: 2rem;">
+        <span class="material-symbols-outlined" style="color: #38BDF8;">person_add</span>
+        Add New Family Member
+      </div>
+      <form onsubmit="handleCreateMember(event)">
+        <div class="input-group">
+          <label class="label-text">Member Name</label>
+          <input type="text" id="mem-name" class="input-control" placeholder="e.g. Uncle David, Nanny Emma" required>
+        </div>
+        <div class="form-grid-2">
+          <div class="input-group">
+            <label class="label-text">Role / Relationship</label>
+            <select id="mem-role" class="input-control">
+              <option value="Kid">Kid</option>
+              <option value="Parent">Parent</option>
+              <option value="Grandparent">Grandparent</option>
+              <option value="Relative/Nanny">Relative / Nanny</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label class="label-text">Birthday</label>
+            <input type="date" id="mem-birthday" class="input-control" value="2020-01-01">
+          </div>
+        </div>
+        <div class="input-group" style="margin-bottom: 2rem;">
+          <label class="label-text">Routine / Vehicle / Notes</label>
+          <input type="text" id="mem-notes" class="input-control" placeholder="e.g. Drives Honda Civic, Peanut allergy">
+        </div>
+        <button type="submit" class="btn-gradient-submit" style="background: var(--cyan-glow);">Save Member Profile</button>
+      </form>
+    </div>
+  </div>
+
+</main>
+
+<!-- EDIT ACTIVITY MODAL -->
+<div class="modal-overlay" id="edit-modal-overlay" onclick="closeEditModal()"></div>
+<div class="edit-modal" id="edit-modal">
+  <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border-subtle); padding-bottom:1rem; margin-bottom:1.5rem;">
+    <div style="font-family:'Outfit',sans-serif; font-weight:800; font-size:1.35rem; color:var(--text-heading); display:flex; align-items:center; gap:0.55rem;">
+      <span class="material-symbols-outlined" style="color:#38BDF8;">edit_calendar</span>
+      Edit Activity Details
+    </div>
+    <button class="btn-icon-edit" onclick="closeEditModal()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  <form onsubmit="handleUpdateEvent(event)">
+    <input type="hidden" id="edit-ev-id">
+    <div class="form-grid-2">
+      <div class="input-group">
+        <label class="label-text">Activity Title</label>
+        <input type="text" id="edit-ev-title" class="input-control" required>
+      </div>
+      <div class="input-group">
+        <label class="label-text">Date</label>
+        <input type="date" id="edit-ev-date" class="input-control" required>
+      </div>
+    </div>
+
+    <div class="form-grid-2">
+      <div class="input-group">
+        <label class="label-text">Start Time</label>
+        <input type="time" id="edit-ev-start" class="input-control" required>
+      </div>
+      <div class="input-group">
+        <label class="label-text">End Time</label>
+        <input type="time" id="edit-ev-end" class="input-control" required>
+      </div>
+    </div>
+
+    <div class="form-grid-2">
+      <div class="input-group">
+        <label class="label-text">Family Members (comma separated)</label>
+        <input type="text" id="edit-ev-members" class="input-control" required>
+      </div>
+      <div class="input-group">
+        <label class="label-text">Category</label>
+        <select id="edit-ev-category" class="input-control">
+          <option value="sports">⚽ Sports</option>
+          <option value="school">🏫 School</option>
+          <option value="classes">🎨 Classes & Lessons</option>
+          <option value="playdates">🧸 Playdates</option>
+          <option value="fitness">🧘 Fitness</option>
+          <option value="family">🍕 Family Event</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-grid-2">
+      <div class="input-group">
+        <label class="label-text">Drop-off Driver</label>
+        <input type="text" id="edit-ev-dropoff" class="input-control" placeholder="e.g. Dad (Mark)">
+      </div>
+      <div class="input-group">
+        <label class="label-text">Pick-up Driver</label>
+        <input type="text" id="edit-ev-pickup" class="input-control" placeholder="e.g. Mom (Sarah)">
+      </div>
+    </div>
+
+    <div class="form-grid-2">
+      <div class="input-group">
+        <label class="label-text">Location / Venue Street Address</label>
+        <input type="text" id="edit-ev-location" class="input-control">
+      </div>
+      <div class="input-group">
+        <label class="label-text">Estimated Drive Time from Home</label>
+        <input type="text" id="edit-ev-traveltime" class="input-control" placeholder="e.g. 12 mins (3.4 mi)">
+      </div>
+    </div>
+
+    <div class="input-group" style="margin-bottom: 2rem;">
+      <label class="label-text">Packing Gear / Special Notes</label>
+      <input type="text" id="edit-ev-notes" class="input-control">
+    </div>
+
+    <div style="display:flex; gap:1rem;">
+      <button type="button" class="btn-gradient-submit" style="background:rgba(239, 68, 68, 0.2); border:1px solid rgba(239, 68, 68, 0.4); color:#FCA5A5; width:35%;" onclick="handleDeleteEvent()">Delete Activity</button>
+      <button type="submit" class="btn-gradient-submit" style="background:var(--cyan-glow); width:65%;">Save Updated Details</button>
+    </div>
+  </form>
+</div>
+
+<!-- FLOATING FAB AI BUTTON -->
+<button class="fab-button" onclick="toggleAIDrawer(true)">
+  <span class="material-symbols-outlined">auto_awesome</span> KinSync AI Assistant
+</button>
+
+<!-- AI DRAWER OVERLAY -->
+<div class="modal-overlay" id="drawer-overlay" onclick="toggleAIDrawer(false)"></div>
+
+<!-- AI DRAWER -->
+<div class="ai-drawer" id="ai-drawer">
+  <div style="padding: 1.5rem 1.75rem; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between;">
+    <div style="display: flex; align-items: center; gap: 0.85rem;">
+      <img src="/kinsync_ai_avatar.png" style="width:42px; height:42px; border-radius:14px; object-fit:cover; box-shadow:0 0 20px rgba(6,182,212,0.4);">
+      <div>
+        <div style="font-family:'Outfit',sans-serif; font-weight:800; font-size:1.15rem; color:var(--text-heading);">KinSync AI Assistant</div>
+        <div style="font-size:0.8rem; color:#38BDF8; font-weight:600;">Logistics & Calendar Coordinator</div>
+      </div>
+    </div>
+    <button class="btn-icon-edit" onclick="toggleAIDrawer(false)">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  <div style="flex:1; overflow-y:auto; padding:1.5rem; display:flex; flex-direction:column; gap:1.25rem;" id="chat-timeline">
+    <div style="display:flex; gap:0.85rem; max-width:92%;">
+      <img src="/kinsync_ai_avatar.png" style="width:38px; height:38px; border-radius:12px; object-fit:cover; flex-shrink:0;">
+      <div style="padding:1.1rem 1.35rem; border-radius:18px; font-size:0.95rem; line-height:1.65; background:rgba(30, 41, 59, 0.85); border:1px solid var(--border-subtle); color:var(--text-body);">
+        Hello Sarah & Mark! 👋 I am your KinSync AI assistant. Ask me anything about driver drop-offs, event conflicts, packing lists, or daily briefs!
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:1.25rem 1.5rem; border-top:1px solid var(--border-subtle); background:rgba(10, 15, 28, 0.98);">
+    <div style="display:flex; gap:0.5rem; margin-bottom:0.85rem; overflow-x:auto; padding-bottom:0.25rem;">
+      <div style="background:rgba(30, 41, 59, 0.8); border:1px solid var(--border-subtle); color:var(--text-muted); padding:0.4rem 0.85rem; border-radius:12px; font-size:0.8rem; font-weight:700; cursor:pointer; white-space:nowrap;" onclick="sendPrompt('Who is picking up Leo today?')">🚗 Who is picking up Leo?</div>
+      <div style="background:rgba(30, 41, 59, 0.8); border:1px solid var(--border-subtle); color:var(--text-muted); padding:0.4rem 0.85rem; border-radius:12px; font-size:0.8rem; font-weight:700; cursor:pointer; white-space:nowrap;" onclick="sendPrompt('Check for any schedule conflicts this weekend.')">⚡ Check conflicts</div>
+      <div style="background:rgba(30, 41, 59, 0.8); border:1px solid var(--border-subtle); color:var(--text-muted); padding:0.4rem 0.85rem; border-radius:12px; font-size:0.8rem; font-weight:700; cursor:pointer; white-space:nowrap;" onclick="sendPrompt('Give me a full brief for Saturday Aug 15.')">📊 Saturday Brief</div>
+    </div>
+
+    <form onsubmit="handleChatSubmit(event)" style="display:flex; gap:0.75rem;">
+      <input type="text" id="chat-input" class="input-control" placeholder="Ask KinSync AI about drivers, events..." autocomplete="off">
+      <button type="submit" class="btn-gradient-submit" style="width:auto; padding:0 1.25rem; background:var(--cyan-glow);">
+        <span class="material-symbols-outlined">send</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+/* STATE DATA */
+let stateMembers = [
+  { name: "Mom (Sarah)", role: "Parent", birthday: "1988-05-14", color: "#E91E63", notes: "Work meetings, Pilates, PTA member, drives Honda Odyssey" },
+  { name: "Dad (Mark)", role: "Parent", birthday: "1986-09-22", color: "#2196F3", notes: "Tech manager, Gym mornings, Soccer coach volunteer, drives Subaru" },
+  { name: "Leo", role: "Kid (Age 8 - 3rd Grade)", birthday: "2018-03-10", color: "#10B981", notes: "Loves LEGO robotics, soccer (#10), piano practice, allergy: peanuts" },
+  { name: "Maya", role: "Kid (Age 5 - Kindergarten)", birthday: "2021-11-04", color: "#F59E0B", notes: "Loves ballet, drawing & clay, swimming, storytime" },
+  { name: "Grandma Helen", role: "Grandparent", birthday: "1958-01-18", color: "#8B5CF6", notes: "Helps with Friday afternoon pickups & weekend family baking" }
+];
+
+const HOME_ADDRESS = "742 Evergreen Terrace, Palo Alto, CA 94301";
+
+let stateEvents = [
+  { id: "1", title: "Lincoln Elementary School", date: "2026-08-14", startTime: "08:30", endTime: "15:00", members: ["Leo"], category: "school", location: "Lincoln Elementary, 500 Alma St, Palo Alto, CA", travelTime: "12 mins (3.4 mi)", dropOff: "Dad (Mark)", pickUp: "Mom (Sarah)", notes: "Pack hot lunch and library book return" },
+  { id: "2", title: "Sunshine Preschool", date: "2026-08-14", startTime: "09:00", endTime: "12:30", members: ["Maya"], category: "school", location: "Sunshine Preschool, 120 Middlefield Rd, Palo Alto, CA", travelTime: "8 mins (2.1 mi)", dropOff: "Dad (Mark)", pickUp: "Mom (Sarah)", notes: "Show & Tell: Favorite stuffed animal" },
+  { id: "3", title: "Maya Playdate with Emma", date: "2026-08-14", startTime: "13:00", endTime: "15:00", members: ["Maya"], category: "playdates", location: "45 Maple St, Palo Alto, CA", travelTime: "6 mins (1.5 mi)", dropOff: "Mom (Sarah)", pickUp: "Grandma Helen", notes: "Snack provided by Emma's mom" },
+  { id: "4", title: "Mom's Pilates Class", date: "2026-08-14", startTime: "16:00", endTime: "17:00", members: ["Sarah"], category: "fitness", location: "Core Reformer Studio, 300 University Ave, Palo Alto, CA", travelTime: "10 mins (2.8 mi)", dropOff: "", pickUp: "", notes: "Grip socks required" },
+  { id: "5", title: "Leo Soccer Practice", date: "2026-08-14", startTime: "16:00", endTime: "17:30", members: ["Leo"], category: "sports", location: "Community Park Field 2, Palo Alto, CA", travelTime: "15 mins (4.2 mi)", dropOff: "Dad (Mark)", pickUp: "Dad (Mark)", notes: "Wear blue jersey, shin guards, bring water bottle" },
+  { id: "6", title: "Friday Family Movie Night & Pizza", date: "2026-08-14", startTime: "18:30", endTime: "20:30", members: ["Leo", "Maya", "Sarah", "Mark", "Grandma Helen"], category: "family", location: "Home Living Room (742 Evergreen Terr)", travelTime: "0 mins (At Home)", dropOff: "", pickUp: "", notes: "Order gluten-free pizza, watch Inside Out 2" },
+  
+  { id: "7", title: "Leo Youth Swim League", date: "2026-08-15", startTime: "09:00", endTime: "10:15", members: ["Leo"], category: "sports", location: "YMCA Aquatic Center, 340 Portage Ave, Palo Alto, CA", travelTime: "14 mins (3.9 mi)", dropOff: "Dad (Mark)", pickUp: "Dad (Mark)", notes: "Goggles, swim cap, towel" },
+  { id: "8", title: "Maya Preschool Ballet & Tap", date: "2026-08-15", startTime: "10:30", endTime: "11:30", members: ["Maya"], category: "classes", location: "Tutu Dance Academy, 120 University Ave, Palo Alto, CA", travelTime: "11 mins (2.9 mi)", dropOff: "Mom (Sarah)", pickUp: "Mom (Sarah)", notes: "Pink leotard, pink ballet slippers, hair bun" },
+  { id: "9", title: "Leo LEGO Robotics Workshop", date: "2026-08-15", startTime: "11:30", endTime: "13:00", members: ["Leo"], category: "classes", location: "MakerSpace Tech Lab, Palo Alto, CA", travelTime: "16 mins (4.5 mi)", dropOff: "Dad (Mark)", pickUp: "Dad (Mark)", notes: "Building EV3 competition robot" },
+  { id: "10", title: "Maya Birthday Party (Toby's 6th)", date: "2026-08-15", startTime: "14:00", endTime: "16:00", members: ["Maya", "Leo"], category: "playdates", location: "JumpZone Trampoline Park, Mountain View, CA", travelTime: "18 mins (5.8 mi)", dropOff: "Mom (Sarah)", pickUp: "Mom (Sarah)", notes: "Grip socks needed. Wrapped Mario Kart Lego set for Toby" },
+  { id: "11", title: "Parents Date Night Out", date: "2026-08-15", startTime: "18:30", endTime: "21:30", members: ["Sarah", "Mark"], category: "family", location: "Osteria Italian Restaurant, Palo Alto, CA", travelTime: "12 mins (3.1 mi)", dropOff: "", pickUp: "", notes: "Grandma Helen babysitting Leo & Maya at home" },
+
+  { id: "12", title: "Sunday Farmers Market & Park Walk", date: "2026-08-16", startTime: "09:30", endTime: "11:30", members: ["Sarah", "Mark", "Leo", "Maya"], category: "family", location: "Town Square Plaza, Palo Alto, CA", travelTime: "8 mins (2.0 mi)", dropOff: "", pickUp: "", notes: "Buy fresh strawberries, honey, sourdough bread" },
+  { id: "13", title: "Leo Piano Lesson", date: "2026-08-16", startTime: "14:00", endTime: "15:00", members: ["Leo"], category: "classes", location: "Harmony Music School, Palo Alto, CA", travelTime: "10 mins (2.7 mi)", dropOff: "Dad (Mark)", pickUp: "Dad (Mark)", notes: "Practice Beethoven Minuet in G" },
+  { id: "14", title: "Maya Little Gym Tumbling", date: "2026-08-16", startTime: "15:15", endTime: "16:15", members: ["Maya"], category: "sports", location: "The Little Gym, Palo Alto, CA", travelTime: "12 mins (3.3 mi)", dropOff: "Mom (Sarah)", pickUp: "Mom (Sarah)", notes: "Barefoot, comfortable shorts & t-shirt" },
+
+  { id: "15", title: "Lincoln Elementary School", date: "2026-08-17", startTime: "08:30", endTime: "15:00", members: ["Leo"], category: "school", location: "Lincoln Elementary, 500 Alma St, Palo Alto, CA", travelTime: "12 mins (3.4 mi)", dropOff: "Dad (Mark)", pickUp: "Dad (Mark)", notes: "Leo Math Olympiad practice at 07:45 AM before school" },
+  { id: "16", title: "Dad's Work Team Dinner", date: "2026-08-17", startTime: "18:00", endTime: "20:30", members: ["Mark"], category: "family", location: "Downtown Steakhouse, Palo Alto, CA", travelTime: "14 mins (3.8 mi)", dropOff: "", pickUp: "", notes: "Quarterly team celebration" }
+];
+
+let activeDateFilter = 'all';
+let activeMemberFilter = 'all';
+
+/* NAVIGATION */
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+
+  if (btn) {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+}
+
+function toggleAIDrawer(open) {
+  const drawer = document.getElementById('ai-drawer');
+  const overlay = document.getElementById('drawer-overlay');
+  if (open) {
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+  } else {
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+  }
+}
+
+/* RENDERERS */
+function renderUI() {
+  document.getElementById('stat-total-events').textContent = stateEvents.length;
+  document.getElementById('stat-members-count').textContent = stateMembers.length;
+  renderTimeline();
+  renderRoster();
+}
+
+function filterDate(date, chip) {
+  activeDateFilter = date;
+  document.querySelectorAll('#date-filter-group .filter-pill').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  renderTimeline();
+}
+
+function filterMember(member, chip) {
+  activeMemberFilter = member;
+  document.querySelectorAll('#member-filter-group .filter-pill').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  renderTimeline();
+}
+
+function renderTimeline() {
+  const timeline = document.getElementById('events-timeline');
+  timeline.innerHTML = '';
+
+  let filtered = stateEvents.filter(e => {
+    const matchDate = activeDateFilter === 'all' || e.date === activeDateFilter;
+    const matchMember = activeMemberFilter === 'all' || e.members.some(m => m.toLowerCase().includes(activeMemberFilter.toLowerCase()));
+    return matchDate && matchMember;
+  });
+
+  if (filtered.length === 0) {
+    timeline.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:3rem; color:var(--text-muted); font-size:1.05rem;">No activities found matching your filters.</div>`;
+    return;
+  }
+
+  filtered.forEach(ev => {
+    const card = document.createElement('div');
+    card.className = 'activity-card';
+
+    const memberPills = ev.members.map(m => {
+      const found = stateMembers.find(sm => sm.name.toLowerCase().includes(m.toLowerCase()));
+      const color = found ? found.color : '#6366F1';
+      return `<span class="member-tag-pill" style="background:${color};">${m}</span>`;
+    }).join(' ');
+
+    const dropHtml = ev.dropOff ? `<div style="color:#38BDF8; font-weight:700; font-size:0.85rem;">🚗 Drop-off: ${ev.dropOff}</div>` : '';
+    const pickHtml = ev.pickUp ? `<div style="color:#F472B6; font-weight:700; font-size:0.85rem;">🚙 Pickup: ${ev.pickUp}</div>` : '';
+
+    const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(HOME_ADDRESS)}&destination=${encodeURIComponent(ev.location)}`;
+
+    card.innerHTML = `
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem; flex-wrap:wrap;">
+        <span class="time-badge-pill">${ev.date} • ${ev.startTime} – ${ev.endTime}</span>
+        <div style="display:flex; align-items:center; gap:0.55rem;">
+          <span style="font-size:0.75rem; text-transform:uppercase; font-weight:800; color:var(--text-muted); letter-spacing:0.06em;">${ev.category}</span>
+          <button class="btn-icon-edit" onclick="openEditModal('${ev.id}')" title="Edit Activity Details">
+            <span class="material-symbols-outlined" style="font-size:1.1rem;">edit</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="activity-title">${ev.title}</div>
+
+      <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">${memberPills}</div>
+
+      <div style="display:flex; flex-direction:column; gap:0.4rem; font-size:0.88rem; color:var(--text-muted); flex:1;">
+        <div style="display:flex; align-items:center; gap:0.45rem;">
+          <span class="material-symbols-outlined" style="color:#38BDF8; font-size:1.05rem;">location_on</span>
+          ${ev.location || 'N/A'}
+        </div>
+        ${ev.notes ? `<div style="display:flex; align-items:center; gap:0.45rem;"><span class="material-symbols-outlined" style="color:#FBBF24; font-size:1.05rem;">backpack</span> ${ev.notes}</div>` : ''}
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,0.06); padding-top:0.6rem;">
+        <span class="drive-time-badge">🚗 ~${ev.travelTime || '10 mins'} from Home</span>
+        <a href="${mapsUrl}" target="_blank" class="btn-maps-link">
+          <span class="material-symbols-outlined" style="font-size:1rem;">map</span> Directions
+        </a>
+      </div>
+
+      ${(dropHtml || pickHtml) ? `
+        <div style="background:rgba(10,15,28,0.85); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:0.65rem 0.9rem; display:flex; flex-direction:column; gap:0.3rem;">
+          ${dropHtml}
+          ${pickHtml}
+        </div>
+      ` : ''}
+    `;
+
+    timeline.appendChild(card);
+  });
+}
+
+function renderRoster() {
+  const rosterGrid = document.getElementById('roster-grid');
+  rosterGrid.innerHTML = '';
+
+  stateMembers.forEach(m => {
+    const card = document.createElement('div');
+    card.className = 'roster-card';
+
+    card.innerHTML = `
+      <div style="display:flex; align-items:center; gap:1.15rem;">
+        <div class="avatar-box" style="background:${m.color};">${m.name.charAt(0)}</div>
+        <div>
+          <div style="font-family:'Outfit',sans-serif; font-weight:800; font-size:1.25rem; color:var(--text-heading);">${m.name}</div>
+          <div style="font-size:0.85rem; color:#38BDF8; font-weight:700;">${m.role}</div>
+        </div>
+      </div>
+      <div style="font-size:0.92rem; color:var(--text-body); line-height:1.6;">
+        ${m.notes}
+      </div>
+      <div style="font-size:0.82rem; background:rgba(10,15,28,0.8); padding:0.55rem 0.85rem; border-radius:12px; color:var(--text-muted); display:flex; justify-content:space-between; border:1px solid rgba(255,255,255,0.05);">
+        <span>🎂 Birthday</span>
+        <span style="font-weight:700; color:var(--text-body);">${m.birthday}</span>
+      </div>
+    `;
+
+    rosterGrid.appendChild(card);
+  });
+}
+
+/* EDIT MODAL HANDLERS */
+function openEditModal(eventId) {
+  const ev = stateEvents.find(e => e.id === eventId);
+  if (!ev) return;
+
+  document.getElementById('edit-ev-id').value = ev.id;
+  document.getElementById('edit-ev-title').value = ev.title;
+  document.getElementById('edit-ev-date').value = ev.date;
+  document.getElementById('edit-ev-start').value = ev.startTime;
+  document.getElementById('edit-ev-end').value = ev.endTime;
+  document.getElementById('edit-ev-members').value = ev.members.join(', ');
+  document.getElementById('edit-ev-category').value = ev.category || 'sports';
+  document.getElementById('edit-ev-dropoff').value = ev.dropOff || '';
+  document.getElementById('edit-ev-pickup').value = ev.pickUp || '';
+  document.getElementById('edit-ev-location').value = ev.location || '';
+  document.getElementById('edit-ev-traveltime').value = ev.travelTime || '';
+  document.getElementById('edit-ev-notes').value = ev.notes || '';
+
+  document.getElementById('edit-modal').classList.add('open');
+  document.getElementById('edit-modal-overlay').classList.add('open');
+}
+
+function closeEditModal() {
+  document.getElementById('edit-modal').classList.remove('open');
+  document.getElementById('edit-modal-overlay').classList.remove('open');
+}
+
+function handleUpdateEvent(e) {
+  e.preventDefault();
+  const id = document.getElementById('edit-ev-id').value;
+  const ev = stateEvents.find(item => item.id === id);
+  if (!ev) return;
+
+  ev.title = document.getElementById('edit-ev-title').value.trim();
+  ev.date = document.getElementById('edit-ev-date').value;
+  ev.startTime = document.getElementById('edit-ev-start').value;
+  ev.endTime = document.getElementById('edit-ev-end').value;
+  ev.members = document.getElementById('edit-ev-members').value.split(',').map(m => m.trim());
+  ev.category = document.getElementById('edit-ev-category').value;
+  ev.dropOff = document.getElementById('edit-ev-dropoff').value.trim();
+  ev.pickUp = document.getElementById('edit-ev-pickup').value.trim();
+  ev.location = document.getElementById('edit-ev-location').value.trim();
+  ev.travelTime = document.getElementById('edit-ev-traveltime').value.trim() || '10 mins';
+  ev.notes = document.getElementById('edit-ev-notes').value.trim();
+
+  renderUI();
+  closeEditModal();
+  sendPrompt(`Updated details for activity "${ev.title}" on ${ev.date} (${ev.startTime}–${ev.endTime}). Location: ${ev.location}, Drive Time: ${ev.travelTime}.`);
+}
+
+function handleDeleteEvent() {
+  const id = document.getElementById('edit-ev-id').value;
+  const idx = stateEvents.findIndex(item => item.id === id);
+  if (idx !== -1) {
+    const deletedTitle = stateEvents[idx].title;
+    stateEvents.splice(idx, 1);
+    renderUI();
+    closeEditModal();
+    sendPrompt(`Deleted activity "${deletedTitle}" from calendar.`);
+  }
+}
+
+/* FORM HANDLERS */
+function handleCreateMember(e) {
+  e.preventDefault();
+  const name = document.getElementById('mem-name').value.trim();
+  const role = document.getElementById('mem-role').value;
+  const birthday = document.getElementById('mem-birthday').value;
+  const notes = document.getElementById('mem-notes').value.trim();
+  const colors = ['#E91E63', '#2196F3', '#10B981', '#F59E0B', '#8B5CF6', '#06B6D4'];
+
+  stateMembers.push({ name, role, birthday, color: colors[stateMembers.length % colors.length], notes });
+  renderUI();
+  e.target.reset();
+  switchTab('tab-roster', null);
+  sendPrompt(`Added family member ${name} (${role}) to roster.`);
+}
+
+function handleCreateEvent(e) {
+  e.preventDefault();
+  const title = document.getElementById('ev-title').value.trim();
+  const date = document.getElementById('ev-date').value;
+  const startTime = document.getElementById('ev-start').value;
+  const endTime = document.getElementById('ev-end').value;
+  const members = document.getElementById('ev-members').value.split(',').map(m => m.trim());
+  const category = document.getElementById('ev-category').value;
+  const location = document.getElementById('ev-location').value.trim();
+  const travelTime = document.getElementById('ev-traveltime').value.trim() || '10 mins';
+  const dropOff = document.getElementById('ev-dropoff').value.trim();
+  const pickUp = document.getElementById('ev-pickup').value.trim();
+  const notes = document.getElementById('ev-notes').value.trim();
+
+  stateEvents.push({ id: String(stateEvents.length + 1), title, date, startTime, endTime, members, category, location, travelTime, dropOff, pickUp, notes });
+  renderUI();
+  e.target.reset();
+  switchTab('tab-schedule', null);
+  sendPrompt(`Added activity "${title}" on ${date} (${startTime}–${endTime}). Location: ${location}, Drive Time: ${travelTime}.`);
+}
+
+function triggerAIBrief() {
+  toggleAIDrawer(true);
+  sendPrompt("Give me a friendly executive brief for Friday August 14, 2026.");
+}
+
+/* CHAT HANDLERS */
+const timeline = document.getElementById('chat-timeline');
+const inputField = document.getElementById('chat-input');
+
+function formatMarkdown(text) {
+  if (typeof marked !== 'undefined' && marked.parse) {
+    return marked.parse(text);
+  }
+  return text;
+}
+
+function appendMsg(role, text) {
+  const row = document.createElement('div');
+  row.style.display = 'flex';
+  row.style.gap = '0.85rem';
+  row.style.maxWidth = '92%';
+  if (role === 'user') {
+    row.style.alignSelf = 'flex-end';
+    row.style.flexDirection = 'row-reverse';
+  } else {
+    row.style.alignSelf = 'flex-start';
+  }
+
+  if (role === 'agent') {
+    const img = document.createElement('img');
+    img.src = '/kinsync_ai_avatar.png';
+    img.style.width = '38px';
+    img.style.height = '38px';
+    img.style.borderRadius = '12px';
+    img.style.objectFit = 'cover';
+    img.style.flexShrink = '0';
+    row.appendChild(img);
+  } else {
+    const avatar = document.createElement('div');
+    avatar.style.width = '38px';
+    avatar.style.height = '38px';
+    avatar.style.borderRadius = '12px';
+    avatar.style.background = 'var(--primary-glow)';
+    avatar.style.display = 'flex';
+    avatar.style.alignItems = 'center';
+    avatar.style.justifyContent = 'center';
+    avatar.style.fontSize = '1.1rem';
+    avatar.style.flexShrink = '0';
+    avatar.textContent = '👤';
+    row.appendChild(avatar);
+  }
+
+  const bubble = document.createElement('div');
+  bubble.style.padding = '1.1rem 1.35rem';
+  bubble.style.borderRadius = '18px';
+  bubble.style.fontSize = '0.95rem';
+  bubble.style.lineHeight = '1.65';
+  bubble.style.background = role === 'user' ? 'var(--cyan-glow)' : 'rgba(30, 41, 59, 0.85)';
+  bubble.style.border = '1px solid var(--border-subtle)';
+  bubble.style.color = role === 'user' ? '#FFFFFF' : 'var(--text-body)';
+
+  if (role === 'agent') {
+    bubble.innerHTML = formatMarkdown(text);
+  } else {
+    bubble.textContent = text;
+  }
+  row.appendChild(bubble);
+
+  timeline.appendChild(row);
+  timeline.scrollTop = timeline.scrollHeight;
+  return bubble;
+}
+
+function sendPrompt(text) {
+  inputField.value = text;
+  document.querySelector('form[onsubmit="handleChatSubmit(event)"]').dispatchEvent(new Event('submit', { cancelable: true }));
+}
+
+async function handleChatSubmit(e) {
+  e.preventDefault();
+  const text = inputField.value.trim();
+  if (!text) return;
+
+  appendMsg('user', text);
+  inputField.value = '';
+
+  const pending = appendMsg('agent', 'KinSync AI is checking schedule & logistics…');
+
+  try {
+    const res = await fetch('/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text })
+    });
+    const data = await res.json();
+    pending.parentElement.remove();
+
+    if (!data.parts || data.parts.length === 0) {
+      appendMsg('agent', 'Calendar updated successfully.');
+      return;
+    }
+
+    data.parts.forEach(p => {
+      if (p.kind === 'text') {
+        const bubble = appendMsg('agent', p.text);
+        if (text.toLowerCase().includes('brief')) {
+          document.getElementById('brief-rendered-content').innerHTML = formatMarkdown(p.text);
+        }
+      }
+    });
+  } catch (err) {
+    pending.textContent = 'Error connecting to KinSync AI: ' + err.message;
+  }
+}
+
+renderUI();
+</script>
+</body>
+</html>
