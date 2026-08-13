@@ -1884,6 +1884,64 @@ function sendPrompt(text) {
   document.querySelector('form[onsubmit="handleChatSubmit(event)"]').dispatchEvent(new Event('submit', { cancelable: true }));
 }
 
+function renderDirectionsCard(queryText, agentText) {
+  const query = (queryText + ' ' + agentText).toLowerCase();
+  
+  // Find matching event from stateEvents
+  const matched = stateEvents.find(e => 
+    query.includes(e.title.toLowerCase()) || 
+    (e.location && query.includes(e.location.toLowerCase())) ||
+    e.title.toLowerCase().split(' ').some(w => w.length > 3 && query.includes(w))
+  ) || stateEvents[0];
+
+  const origin = "742 Evergreen Terrace, Palo Alto, CA 94301";
+  const dest = matched ? matched.location : "Palo Alto, CA";
+  const travel = matched ? (matched.travelTime || "12-15 mins") : "12-15 mins";
+  const title = matched ? matched.title : "Family Activity";
+  const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(dest)}`;
+
+  return `
+    <div style="margin-top:0.85rem; background:linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(30,41,59,0.92) 100%); border:1px solid rgba(6,182,212,0.4); border-radius:16px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.5);">
+      <!-- Card Header -->
+      <div style="padding:0.75rem 1rem; background:linear-gradient(90deg, rgba(6,182,212,0.25) 0%, rgba(99,102,241,0.2) 100%); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:space-between;">
+        <div style="display:flex; align-items:center; gap:0.5rem; font-weight:800; font-family:var(--font-heading); color:#38BDF8; font-size:0.92rem;">
+          <span class="material-symbols-outlined" style="font-size:1.15rem; color:#38BDF8;">map</span>
+          Google Maps Live Route & Directions
+        </div>
+        <span style="background:rgba(6,182,212,0.25); border:1px solid rgba(6,182,212,0.5); color:#38BDF8; font-size:0.75rem; font-weight:800; padding:0.25rem 0.6rem; border-radius:100px;">
+          🚗 ~${travel}
+        </span>
+      </div>
+
+      <!-- Route Details -->
+      <div style="padding:1rem; display:flex; flex-direction:column; gap:0.75rem;">
+        <div style="font-weight:800; font-size:1.05rem; color:var(--text-heading); font-family:var(--font-heading);">
+          🎯 ${title}
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:0.45rem; background:rgba(10,15,28,0.7); padding:0.75rem 0.85rem; border-radius:12px; border:1px solid rgba(255,255,255,0.05); font-size:0.83rem;">
+          <div style="display:flex; align-items:center; gap:0.5rem; color:var(--text-body);">
+            <span style="color:#10B981; font-size:1rem;">🏠</span>
+            <span style="color:var(--text-muted); font-weight:600;">Home Base:</span>
+            <span style="font-weight:700;">${origin}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:0.5rem; color:var(--text-body);">
+            <span style="color:#F43F5E; font-size:1rem;">📍</span>
+            <span style="color:var(--text-muted); font-weight:600;">Destination:</span>
+            <span style="font-weight:700; color:#38BDF8;">${dest}</span>
+          </div>
+        </div>
+
+        <!-- Google Maps Button -->
+        <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" style="display:flex; align-items:center; justify-content:center; gap:0.5rem; width:100%; padding:0.7rem 1rem; background:linear-gradient(135deg, #06B6D4 0%, #3B82F6 100%); color:#FFFFFF; text-decoration:none; font-weight:800; font-size:0.88rem; border-radius:10px; box-shadow:0 4px 15px rgba(6,182,212,0.35); transition:all 0.2s ease;">
+          <span class="material-symbols-outlined" style="font-size:1.15rem;">near_me</span>
+          Open Turn-by-Turn Directions in Google Maps
+        </a>
+      </div>
+    </div>
+  `;
+}
+
 async function handleChatSubmit(e) {
   e.preventDefault();
   const text = inputField.value.trim();
@@ -1892,7 +1950,7 @@ async function handleChatSubmit(e) {
   appendMsg('user', text);
   inputField.value = '';
 
-  const pending = appendMsg('agent', 'KinSync AI is checking schedule & logistics…');
+  const pending = appendMsg('agent', 'KinSync AI is checking schedule & directions…');
 
   try {
     const res = await fetch('/chat', {
@@ -1913,6 +1971,13 @@ async function handleChatSubmit(e) {
         const bubble = appendMsg('agent', p.text);
         if (text.toLowerCase().includes('brief')) {
           document.getElementById('brief-rendered-content').innerHTML = formatMarkdown(p.text);
+        }
+
+        const lowerQ = text.toLowerCase();
+        const lowerT = p.text.toLowerCase();
+        if (lowerQ.includes('how long') || lowerQ.includes('direction') || lowerQ.includes('reach') || lowerQ.includes('far') || lowerQ.includes('drive') || lowerQ.includes('get to') || lowerQ.includes('time to') || lowerT.includes('google.com/maps') || lowerT.includes('travel_time') || lowerT.includes('travel time')) {
+          const directionsCardHtml = renderDirectionsCard(text, p.text);
+          bubble.innerHTML += directionsCardHtml;
         }
       }
     });

@@ -14,6 +14,7 @@ from .tools import (
     add_family_member,
     detect_conflicts,
     generate_daily_brief,
+    get_directions_and_travel_time,
     list_events,
     list_family_members,
 )
@@ -33,7 +34,7 @@ instruction = schema_manager.generate_system_prompt(
         "2. Format all text responses into short, scannable bullet points (•) with bold category highlights (e.g. **Activity**, **Time**, **Driver**, **Weather**). "
         "3. Use relevant emojis (🚗, ☀️, 📅, ⚽, 🍕, 🌧️) to make text visually engaging. "
         "4. Always check weather predictions for events and include a brief 1-line gear/weather advice. "
-        "5. Keep responses strictly under 4-5 concise bullet points total."
+        "5. When asked 'how long to reach', 'directions to', 'how far is', or 'drive time to' an activity, call get_directions_and_travel_time and return the origin (742 Evergreen Terrace, Palo Alto, CA), destination, estimated drive time, and Google Maps URL."
     ),
     workflow_description="Analyze the family schedule request and return structured UI surfaces or short bulleted summaries when appropriate.",
     ui_description=(
@@ -71,6 +72,7 @@ root_agent = Agent(
         list_events,
         detect_conflicts,
         generate_daily_brief,
+        get_directions_and_travel_time,
     ],
     after_model_callback=a2ui_callback,
 )
