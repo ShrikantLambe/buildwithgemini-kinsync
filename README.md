@@ -1,6 +1,6 @@
 # ⚡ KinSync — AI-Powered Family Logistics & Calendar Command Hub
 
-**KinSync** is a modern, glassmorphic executive command platform designed for multi-child family scheduling, driver assignments, packing lists, live Google Maps directions, and AI logistics coordination.
+**KinSync** is a modern, glassmorphic executive command platform designed for multi-child family scheduling, driver assignments, packing lists, live Google Maps directions, weather predictions, and AI logistics coordination.
 
 Built with **Google Agent Development Kit (ADK)**, **Vertex AI Reasoning Engine**, and **A2UI v0.8**.
 
@@ -8,8 +8,12 @@ Built with **Google Agent Development Kit (ADK)**, **Vertex AI Reasoning Engine*
 
 ## 🌟 Key Features
 
-- 📊 **Executive Daily Briefs**: Automated morning breakdown of drop-offs, pickups, estimated drive times, and daily family routines.
-- 📅 **Compact Activity Pill Grid**: Responsive grid displaying family member color tags, time badges, category labels, location details, and packing checklists.
+- 📊 **Executive Daily Briefs**: Automated morning breakdown of drop-offs, pickups, estimated drive times, and daily family routines with glassmorphic time blocks.
+- 📅 **Compact Activity Pill Grid**: Responsive grid displaying family member color tags, time badges, category labels, location details, weather predictions, and packing checklists.
+- 🗺️ **Chatbot Google Maps Directions Pop-up Cards**: Asking *"How long to reach X?"* or *"Directions to X"* in the AI assistant renders an interactive Google Maps route pop-up card with turn-by-turn navigation buttons.
+- 🔠 **Interactive Font Switcher**: Switch typography on the fly with a 1-click header dropdown featuring 5 curated font suites (`Outfit + Jakarta`, `Space Grotesk + Inter`, `Syne + DM Sans`, `Lexend + Poppins`, `Playfair + Jakarta`).
+- 👁️ **Privacy Mode**: Top navbar toggle to mask sensitive dates and personal family notes across schedule cards and roster profiles.
+- ☀️ **Weather Predictions & Venue Action Modals**: Live event weather forecasts, gear preparation advice, and one-tap venue contact/cancellation dialing.
 - 🚗 **Driver Assignments & Logistics**: Track drop-off and pickup drivers (`Dad (Mark)`, `Mom (Sarah)`, `Grandma Helen`) for every event.
 - 🗺️ **Live Google Maps & Travel Times**: One-click Google Maps directions (`Origin: Home Base` $\rightarrow$ `Destination`) with estimated drive time badges (e.g. `🚗 ~12 mins (3.4 mi) from Home`).
 - ✏️ **Interactive Activity Editing**: Edit or delete activities directly from any card with live UI re-rendering and automatic AI state synchronization.
@@ -30,7 +34,7 @@ Built with **Google Agent Development Kit (ADK)**, **Vertex AI Reasoning Engine*
 
 - **Core Agent**: Built with [Google ADK](https://github.com/google/adk) using `gemini-2.5-flash`.
 - **A2UI Integration**: Uses `A2uiSchemaManager` (version `0.8`) with `BasicCatalog` and `a2ui_callback`.
-- **Frontend App**: FastAPI server serving a single-page web app styled with glassmorphism, `Plus Jakarta Sans` body typography, `Outfit` bold headers, and Material Symbols icons.
+- **Frontend App**: FastAPI server serving a single-page web app styled with glassmorphism, customizable typography suites, and Material Symbols icons.
 - **Location Base**: Configured home base (`742 Evergreen Terrace, Palo Alto, CA 94301`) for Google Maps route calculation.
 
 ---
@@ -41,12 +45,12 @@ Built with **Google Agent Development Kit (ADK)**, **Vertex AI Reasoning Engine*
 kinsync/
 ├── app/                        # Core agent implementation
 │   ├── agent.py                # Main ADK agent definition & A2UI schema manager
-│   ├── tools.py                # Schedule tools, conflict detection & in-memory storage
+│   ├── tools.py                # Schedule tools, directions, conflict detection & in-memory storage
 │   └── a2ui_utils.py           # A2UI model callback renderer
 ├── frontend/                   # Web frontend & FastAPI proxy
 │   ├── main.py                 # FastAPI server proxying requests to Agent Engine over A2A
 │   └── static/
-│       ├── index.html          # Glassmorphic web app UI with Maps & Edit modals
+│       ├── index.html          # Glassmorphic web app UI with Maps, Directions & Edit modals
 │       └── kinsync_ai_avatar.png # AI Assistant avatar
 ├── deployment/                 # Deployment scripts & build metadata
 ├── pyproject.toml              # Dependencies (google-adk, google-genai, fastapi, uvicorn)
@@ -95,6 +99,9 @@ Open your browser at `http://localhost:8080` to access the KinSync platform.
 ## 🎨 UI Highlights
 
 - **Executive Brief**: Morning briefing hero banner with schedule health indicators and detailed drop-off/pickup timelines.
+- **Chatbot Directions Pop-ups**: Instant Google Maps route cards generated directly in chat conversations.
+- **Interactive Font Switcher**: Real-time typography suite toggle header dropdown.
+- **Privacy Toggle**: Instant masking for sensitive dates and personal family notes.
 - **Family Roster**: Visual member profile cards with custom color avatars and routine notes.
 - **Activity Pills**: Grid layout displaying date/time, category tags, driver pills, drive time badges, and Google Maps links.
 - **Interactive Editing**: Glassmorphic modal form to edit activity title, dates, times, drivers, venue address, and packing notes.
