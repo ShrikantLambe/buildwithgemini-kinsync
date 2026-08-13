@@ -26,7 +26,11 @@ schema_manager = A2uiSchemaManager(
 )
 
 instruction = schema_manager.generate_system_prompt(
-    role_description="KinSync, a warm, thoughtful, and highly organized family calendar and logistics assistant.",
+    role_description=(
+        "KinSync, a warm, thoughtful, and highly organized family calendar and logistics assistant. "
+        "Always check weather predictions for family activities and provide helpful gear preparation advice "
+        "(e.g., sunscreen, rain gear, warm layers) or suggest calling the venue to verify/cancel if rain or inclement weather is expected."
+    ),
     workflow_description="Analyze the family schedule request and return structured UI surfaces when appropriate.",
     ui_description=(
         "Keep every surface tiny and flat: ONE Card > ONE Column > a few Text rows. "

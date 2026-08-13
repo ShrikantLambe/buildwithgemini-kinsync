@@ -520,6 +520,77 @@
     font-weight: 700;
   }
 
+  .weather-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #34D399;
+    padding: 0.35rem 0.75rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .weather-badge.rain-alert {
+    background: rgba(239, 68, 68, 0.18);
+    border-color: rgba(239, 68, 68, 0.45);
+    color: #FCA5A5;
+  }
+
+  .weather-advisory-box {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 12px;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.85rem;
+    color: #FDE68A;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    line-height: 1.35;
+  }
+
+  .btn-call-venue {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #FCA5A5;
+    padding: 0.4rem 0.85rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-call-venue:hover {
+    background: rgba(239, 68, 68, 0.3);
+    color: #FFFFFF;
+    border-color: #EF4444;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+    transform: translateY(-1px);
+  }
+
+  .status-cancelled-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: rgba(239, 68, 68, 0.25);
+    border: 1px solid #EF4444;
+    color: #FECACA;
+    padding: 0.25rem 0.65rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
   /* ROSTER GRID */
   .roster-grid {
     display: grid;
@@ -1161,6 +1232,24 @@
   </form>
 </div>
 
+<!-- VENUE CONTACT & WEATHER ACTION MODAL -->
+<div class="modal-overlay" id="venue-modal-overlay" onclick="closeVenueModal()"></div>
+<div class="edit-modal" id="venue-modal" style="max-width: 580px;">
+  <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border-subtle); padding-bottom:1rem; margin-bottom:1.5rem;">
+    <div style="font-family:'Outfit',sans-serif; font-weight:800; font-size:1.3rem; color:var(--text-heading); display:flex; align-items:center; gap:0.55rem;">
+      <span class="material-symbols-outlined" style="color:#F59E0B;">partly_cloudy_day</span>
+      Venue Contact & Weather Action
+    </div>
+    <button class="btn-icon-edit" onclick="closeVenueModal()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+
+  <div id="venue-modal-content" style="display:flex; flex-direction:column; gap:1.25rem;">
+    <!-- Populated dynamically by openVenueModal(id) -->
+  </div>
+</div>
+
 <!-- FLOATING FAB AI BUTTON -->
 <button class="fab-button" onclick="toggleAIDrawer(true)">
   <span class="material-symbols-outlined">auto_awesome</span> KinSync AI Assistant
@@ -1222,25 +1311,25 @@ let stateMembers = [
 const HOME_ADDRESS = "742 Evergreen Terrace, Palo Alto, CA 94301";
 
 let stateEvents = [
-  { id: "1", title: "Lincoln Elementary School", date: "2026-08-14", startTime: "08:30", endTime: "15:00", members: ["Leo"], category: "school", location: "Lincoln Elementary, 500 Alma St, Palo Alto, CA", travelTime: "12 mins (3.4 mi)", dropOff: "Dad (Mark)", pickUp: "Mom (Sarah)", notes: "Pack hot lunch and library book return" },
-  { id: "2", title: "Sunshine Preschool", date: "2026-08-14", startTime: "09:00", endTime: "12:30", members: ["Maya"], category: "school", location: "Sunshine Preschool, 120 Middlefield Rd, Palo Alto, CA", travelTime: "8 mins (2.1 mi)", dropOff: "Dad (Mark)", pickUp: "Mom (Sarah)", notes: "Show & Tell: Favorite stuffed animal" },
-  { id: "3", title: "Maya Playdate with Emma", date: "2026-08-14", startTime: "13:00", endTime: "15:00", members: ["Maya"], category: "playdates", location: "45 Maple St, Palo Alto, CA", travelTime: "6 mins (1.5 mi)", dropOff: "Mom (Sarah)", pickUp: "Grandma Helen", notes: "Snack provided by Emma's mom" },
-  { id: "4", title: "Mom's Pilates Class", date: "2026-08-14", startTime: "16:00", endTime: "17:00", members: ["Sarah"], category: "fitness", location: "Core Reformer Studio, 300 University Ave, Palo Alto, CA", travelTime: "10 mins (2.8 mi)", dropOff: "", pickUp: "", notes: "Grip socks required" },
-  { id: "5", title: "Leo Soccer Practice", date: "2026-08-14", startTime: "16:00", endTime: "17:30", members: ["Leo"], category: "sports", location: "Community Park Field 2, Palo Alto, CA", travelTime: "15 mins (4.2 mi)", dropOff: "Dad (Mark)", pickUp: "Dad (Mark)", notes: "Wear blue jersey, shin guards, bring water bottle" },
-  { id: "6", title: "Friday Family Movie Night & Pizza", date: "2026-08-14", startTime: "18:30", endTime: "20:30", members: ["Leo", "Maya", "Sarah", "Mark", "Grandma Helen"], category: "family", location: "Home Living Room (742 Evergreen Terr)", travelTime: "0 mins (At Home)", dropOff: "", pickUp: "", notes: "Order gluten-free pizza, watch Inside Out 2" },
+  { id: "1", title: "Lincoln Elementary School", date: "2026-08-14", startTime: "08:30", endTime: "15:00", members: ["Leo"], category: "school", location: "Lincoln Elementary, 500 Alma St, Palo Alto, CA", travelTime: "12 mins (3.4 mi)", dropOff: "Dad (Mark)", pickUp: "Mom (Sarah)", notes: "Pack hot lunch and library book return", weather: { forecast: "☀️ 78°F Clear & Sunny", advice: "Sunny afternoon recess. Apply SPF 50 sunscreen & pack sun hat.", phone: "(650) 555-0101", rainAlert: false } },
+  { id: "2", title: "Sunshine Preschool", date: "2026-08-14", startTime: "09:00", endTime: "12:30", members: ["Maya"], category: "school", location: "Sunshine Preschool, 120 Middlefield Rd, Palo Alto, CA", travelTime: "8 mins (2.1 mi)", dropOff: "Dad (Mark)", pickUp: "Mom (Sarah)", notes: "Show & Tell: Favorite stuffed animal", weather: { forecast: "☀️ 76°F Warm", advice: "Outdoor morning play. Pack water bottle.", phone: "(650) 555-0102", rainAlert: false } },
+  { id: "3", title: "Maya Playdate with Emma", date: "2026-08-14", startTime: "13:00", endTime: "15:00", members: ["Maya"], category: "playdates", location: "45 Maple St, Palo Alto, CA", travelTime: "6 mins (1.5 mi)", dropOff: "Mom (Sarah)", pickUp: "Grandma Helen", notes: "Snack provided by Emma's mom", weather: { forecast: "⛅ 74°F Partly Cloudy", advice: "Backyard play. Light sweater for late afternoon.", phone: "(650) 555-0103", rainAlert: false } },
+  { id: "4", title: "Mom's Pilates Class", date: "2026-08-14", startTime: "16:00", endTime: "17:00", members: ["Sarah"], category: "fitness", location: "Core Reformer Studio, 300 University Ave, Palo Alto, CA", travelTime: "10 mins (2.8 mi)", dropOff: "", pickUp: "", notes: "Grip socks required", weather: { forecast: "🌤️ 72°F Indoor Studio", advice: "Indoor AC studio. Bring personal water bottle.", phone: "(650) 555-0104", rainAlert: false } },
+  { id: "5", title: "Leo Soccer Practice", date: "2026-08-14", startTime: "16:00", endTime: "17:30", members: ["Leo"], category: "sports", location: "Community Park Field 2, Palo Alto, CA", travelTime: "15 mins (4.2 mi)", dropOff: "Dad (Mark)", pickUp: "Dad (Mark)", notes: "Wear blue jersey, shin guards, bring water bottle", weather: { forecast: "🌧️ 62°F Rain Alert (80% Chance)", advice: "⚠️ Rain Advisory! Field may be slippery. Pack rain jacket, towel & cleats. Call venue line below to verify if practice moves to indoor gym.", phone: "(650) 555-0105", rainAlert: true } },
+  { id: "6", title: "Friday Family Movie Night & Pizza", date: "2026-08-14", startTime: "18:30", endTime: "20:30", members: ["Leo", "Maya", "Sarah", "Mark", "Grandma Helen"], category: "family", location: "Home Living Room (742 Evergreen Terr)", travelTime: "0 mins (At Home)", dropOff: "", pickUp: "", notes: "Order gluten-free pizza, watch Inside Out 2", weather: { forecast: "🌧️ 58°F Evening Rain", advice: "Cozy indoor movie night at home!", phone: "(650) 555-0100", rainAlert: false } },
   
-  { id: "7", title: "Leo Youth Swim League", date: "2026-08-15", startTime: "09:00", endTime: "10:15", members: ["Leo"], category: "sports", location: "YMCA Aquatic Center, 340 Portage Ave, Palo Alto, CA", travelTime: "14 mins (3.9 mi)", dropOff: "Dad (Mark)", pickUp: "Dad (Mark)", notes: "Goggles, swim cap, towel" },
-  { id: "8", title: "Maya Preschool Ballet & Tap", date: "2026-08-15", startTime: "10:30", endTime: "11:30", members: ["Maya"], category: "classes", location: "Tutu Dance Academy, 120 University Ave, Palo Alto, CA", travelTime: "11 mins (2.9 mi)", dropOff: "Mom (Sarah)", pickUp: "Mom (Sarah)", notes: "Pink leotard, pink ballet slippers, hair bun" },
-  { id: "9", title: "Leo LEGO Robotics Workshop", date: "2026-08-15", startTime: "11:30", endTime: "13:00", members: ["Leo"], category: "classes", location: "MakerSpace Tech Lab, Palo Alto, CA", travelTime: "16 mins (4.5 mi)", dropOff: "Dad (Mark)", pickUp: "Dad (Mark)", notes: "Building EV3 competition robot" },
-  { id: "10", title: "Maya Birthday Party (Toby's 6th)", date: "2026-08-15", startTime: "14:00", endTime: "16:00", members: ["Maya", "Leo"], category: "playdates", location: "JumpZone Trampoline Park, Mountain View, CA", travelTime: "18 mins (5.8 mi)", dropOff: "Mom (Sarah)", pickUp: "Mom (Sarah)", notes: "Grip socks needed. Wrapped Mario Kart Lego set for Toby" },
-  { id: "11", title: "Parents Date Night Out", date: "2026-08-15", startTime: "18:30", endTime: "21:30", members: ["Sarah", "Mark"], category: "family", location: "Osteria Italian Restaurant, Palo Alto, CA", travelTime: "12 mins (3.1 mi)", dropOff: "", pickUp: "", notes: "Grandma Helen babysitting Leo & Maya at home" },
+  { id: "7", title: "Leo Youth Swim League", date: "2026-08-15", startTime: "09:00", endTime: "10:15", members: ["Leo"], category: "sports", location: "YMCA Aquatic Center, 340 Portage Ave, Palo Alto, CA", travelTime: "14 mins (3.9 mi)", dropOff: "Dad (Mark)", pickUp: "Dad (Mark)", notes: "Goggles, swim cap, towel", weather: { forecast: "☀️ 82°F Warm & Sunny", advice: "Outdoor heated pool. Pack extra dry towels & sunscreen.", phone: "(650) 555-0107", rainAlert: false } },
+  { id: "8", title: "Maya Preschool Ballet & Tap", date: "2026-08-15", startTime: "10:30", endTime: "11:30", members: ["Maya"], category: "classes", location: "Tutu Dance Academy, 120 University Ave, Palo Alto, CA", travelTime: "11 mins (2.9 mi)", dropOff: "Mom (Sarah)", pickUp: "Mom (Sarah)", notes: "Pink leotard, pink ballet slippers, hair bun", weather: { forecast: "☀️ 80°F Sunny", advice: "Indoor dance studio. Comfortable warm-up wrap.", phone: "(650) 555-0108", rainAlert: false } },
+  { id: "9", title: "Leo LEGO Robotics Workshop", date: "2026-08-15", startTime: "11:30", endTime: "13:00", members: ["Leo"], category: "classes", location: "MakerSpace Tech Lab, Palo Alto, CA", travelTime: "16 mins (4.5 mi)", dropOff: "Dad (Mark)", pickUp: "Dad (Mark)", notes: "Building EV3 competition robot", weather: { forecast: "☀️ 84°F Hot", advice: "Air-conditioned lab. Hydrate well.", phone: "(650) 555-0109", rainAlert: false } },
+  { id: "10", title: "Maya Birthday Party (Toby's 6th)", date: "2026-08-15", startTime: "14:00", endTime: "16:00", members: ["Maya", "Leo"], category: "playdates", location: "JumpZone Trampoline Park, Mountain View, CA", travelTime: "18 mins (5.8 mi)", dropOff: "Mom (Sarah)", pickUp: "Mom (Sarah)", notes: "Grip socks needed. Wrapped Mario Kart Lego set for Toby", weather: { forecast: "⛅ 85°F Hot Afternoon", advice: "Indoor trampoline park. Water bottle essential.", phone: "(650) 555-0110", rainAlert: false } },
+  { id: "11", title: "Parents Date Night Out", date: "2026-08-15", startTime: "18:30", endTime: "21:30", members: ["Sarah", "Mark"], category: "family", location: "Osteria Italian Restaurant, Palo Alto, CA", travelTime: "12 mins (3.1 mi)", dropOff: "", pickUp: "", notes: "Grandma Helen babysitting Leo & Maya at home", weather: { forecast: "🌌 70°F Pleasant Evening", advice: "Patio dining weather. Light jacket for evening.", phone: "(650) 555-0111", rainAlert: false } },
 
-  { id: "12", title: "Sunday Farmers Market & Park Walk", date: "2026-08-16", startTime: "09:30", endTime: "11:30", members: ["Sarah", "Mark", "Leo", "Maya"], category: "family", location: "Town Square Plaza, Palo Alto, CA", travelTime: "8 mins (2.0 mi)", dropOff: "", pickUp: "", notes: "Buy fresh strawberries, honey, sourdough bread" },
-  { id: "13", title: "Leo Piano Lesson", date: "2026-08-16", startTime: "14:00", endTime: "15:00", members: ["Leo"], category: "classes", location: "Harmony Music School, Palo Alto, CA", travelTime: "10 mins (2.7 mi)", dropOff: "Dad (Mark)", pickUp: "Dad (Mark)", notes: "Practice Beethoven Minuet in G" },
-  { id: "14", title: "Maya Little Gym Tumbling", date: "2026-08-16", startTime: "15:15", endTime: "16:15", members: ["Maya"], category: "sports", location: "The Little Gym, Palo Alto, CA", travelTime: "12 mins (3.3 mi)", dropOff: "Mom (Sarah)", pickUp: "Mom (Sarah)", notes: "Barefoot, comfortable shorts & t-shirt" },
+  { id: "12", title: "Sunday Farmers Market & Park Walk", date: "2026-08-16", startTime: "09:30", endTime: "11:30", members: ["Sarah", "Mark", "Leo", "Maya"], category: "family", location: "Town Square Plaza, Palo Alto, CA", travelTime: "8 mins (2.0 mi)", dropOff: "", pickUp: "", notes: "Buy fresh strawberries, honey, sourdough bread", weather: { forecast: "🌧️ 58°F Heavy Rain & Gusts (90% Chance)", advice: "⚠️ Severe Rain Advisory! Outdoor market may be closed. Call venue line or consider indoor grocery market.", phone: "(650) 555-0112", rainAlert: true } },
+  { id: "13", title: "Leo Piano Lesson", date: "2026-08-16", startTime: "14:00", endTime: "15:00", members: ["Leo"], category: "classes", location: "Harmony Music School, Palo Alto, CA", travelTime: "10 mins (2.7 mi)", dropOff: "Dad (Mark)", pickUp: "Dad (Mark)", notes: "Practice Beethoven Minuet in G", weather: { forecast: "🌦️ 62°F Scattered Rain", advice: "Indoor music studio. Bring umbrella for walking to door.", phone: "(650) 555-0113", rainAlert: false } },
+  { id: "14", title: "Maya Little Gym Tumbling", date: "2026-08-16", startTime: "15:15", endTime: "16:15", members: ["Maya"], category: "sports", location: "The Little Gym, Palo Alto, CA", travelTime: "12 mins (3.3 mi)", dropOff: "Mom (Sarah)", pickUp: "Mom (Sarah)", notes: "Barefoot, comfortable shorts & t-shirt", weather: { forecast: "🌦️ 64°F Passing Showers", advice: "Indoor gym arena.", phone: "(650) 555-0114", rainAlert: false } },
 
-  { id: "15", title: "Lincoln Elementary School", date: "2026-08-17", startTime: "08:30", endTime: "15:00", members: ["Leo"], category: "school", location: "Lincoln Elementary, 500 Alma St, Palo Alto, CA", travelTime: "12 mins (3.4 mi)", dropOff: "Dad (Mark)", pickUp: "Dad (Mark)", notes: "Leo Math Olympiad practice at 07:45 AM before school" },
-  { id: "16", title: "Dad's Work Team Dinner", date: "2026-08-17", startTime: "18:00", endTime: "20:30", members: ["Mark"], category: "family", location: "Downtown Steakhouse, Palo Alto, CA", travelTime: "14 mins (3.8 mi)", dropOff: "", pickUp: "", notes: "Quarterly team celebration" }
+  { id: "15", title: "Lincoln Elementary School", date: "2026-08-17", startTime: "08:30", endTime: "15:00", members: ["Leo"], category: "school", location: "Lincoln Elementary, 500 Alma St, Palo Alto, CA", travelTime: "12 mins (3.4 mi)", dropOff: "Dad (Mark)", pickUp: "Dad (Mark)", notes: "Leo Math Olympiad practice at 07:45 AM before school", weather: { forecast: "☀️ 75°F Pleasant", advice: "Standard school day attire.", phone: "(650) 555-0101", rainAlert: false } },
+  { id: "16", title: "Dad's Work Team Dinner", date: "2026-08-17", startTime: "18:00", endTime: "20:30", members: ["Mark"], category: "family", location: "Downtown Steakhouse, Palo Alto, CA", travelTime: "14 mins (3.8 mi)", dropOff: "", pickUp: "", notes: "Quarterly team celebration", weather: { forecast: "🌌 68°F Clear Night", advice: "Smart casual evening attire.", phone: "(650) 555-0116", rainAlert: false } }
 ];
 
 let activeDateFilter = 'all';
@@ -1310,6 +1399,12 @@ function renderTimeline() {
     const card = document.createElement('div');
     card.className = 'activity-card';
 
+    const isCancelled = ev.status === 'Cancelled';
+    if (isCancelled) {
+      card.style.opacity = '0.65';
+      card.style.border = '1px solid rgba(239, 68, 68, 0.4)';
+    }
+
     const memberPills = ev.members.map(m => {
       const found = stateMembers.find(sm => sm.name.toLowerCase().includes(m.toLowerCase()));
       const color = found ? found.color : '#6366F1';
@@ -1321,10 +1416,15 @@ function renderTimeline() {
 
     const mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(HOME_ADDRESS)}&destination=${encodeURIComponent(ev.location)}`;
 
+    const weatherForecast = ev.weather?.forecast || '☀️ 75°F Clear';
+    const rainAlert = ev.weather?.rainAlert;
+    const weatherAdvice = ev.weather?.advice;
+
     card.innerHTML = `
       <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem; flex-wrap:wrap;">
         <span class="time-badge-pill">${ev.date} • ${ev.startTime} – ${ev.endTime}</span>
         <div style="display:flex; align-items:center; gap:0.55rem;">
+          ${isCancelled ? `<span class="status-cancelled-badge">❌ Cancelled</span>` : ''}
           <span style="font-size:0.75rem; text-transform:uppercase; font-weight:800; color:var(--text-muted); letter-spacing:0.06em;">${ev.category}</span>
           <button class="btn-icon-edit" onclick="openEditModal('${ev.id}')" title="Edit Activity Details">
             <span class="material-symbols-outlined" style="font-size:1.1rem;">edit</span>
@@ -1332,9 +1432,19 @@ function renderTimeline() {
         </div>
       </div>
 
-      <div class="activity-title">${ev.title}</div>
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
+        <div class="activity-title" style="${isCancelled ? 'text-decoration:line-through; color:var(--text-muted);' : ''}">${ev.title}</div>
+        <span class="weather-badge ${rainAlert ? 'rain-alert' : ''}">${weatherForecast}</span>
+      </div>
 
       <div style="display:flex; gap:0.4rem; flex-wrap:wrap;">${memberPills}</div>
+
+      ${weatherAdvice ? `
+        <div class="weather-advisory-box">
+          <span class="material-symbols-outlined" style="font-size:1.1rem; color:#FBBF24; flex-shrink:0;">thermostat</span>
+          <div>${weatherAdvice}</div>
+        </div>
+      ` : ''}
 
       <div style="display:flex; flex-direction:column; gap:0.4rem; font-size:0.88rem; color:var(--text-muted); flex:1;">
         <div style="display:flex; align-items:center; gap:0.45rem;">
@@ -1346,10 +1456,27 @@ function renderTimeline() {
 
       <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem; flex-wrap:wrap; border-top:1px solid rgba(255,255,255,0.06); padding-top:0.6rem;">
         <span class="drive-time-badge">🚗 ~${ev.travelTime || '10 mins'} from Home</span>
-        <a href="${mapsUrl}" target="_blank" class="btn-maps-link">
-          <span class="material-symbols-outlined" style="font-size:1rem;">map</span> Directions
-        </a>
+        <div style="display:flex; gap:0.4rem;">
+          <a href="${mapsUrl}" target="_blank" class="btn-maps-link">
+            <span class="material-symbols-outlined" style="font-size:1rem;">map</span> Directions
+          </a>
+          <button class="btn-call-venue" onclick="openVenueModal('${ev.id}')">
+            <span class="material-symbols-outlined" style="font-size:1rem;">call</span> Venue / Weather
+          </button>
+        </div>
       </div>
+
+      ${(dropHtml || pickHtml) ? `
+        <div style="background:rgba(10,15,28,0.85); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:0.65rem 0.9rem; display:flex; flex-direction:column; gap:0.3rem;">
+          ${dropHtml}
+          ${pickHtml}
+        </div>
+      ` : ''}
+    `;
+
+    timeline.appendChild(card);
+  });
+}
 
       ${(dropHtml || pickHtml) ? `
         <div style="background:rgba(10,15,28,0.85); border:1px solid rgba(255,255,255,0.06); border-radius:12px; padding:0.65rem 0.9rem; display:flex; flex-direction:column; gap:0.3rem;">
@@ -1603,6 +1730,83 @@ async function handleChatSubmit(e) {
     });
   } catch (err) {
     pending.textContent = 'Error connecting to KinSync AI: ' + err.message;
+  }
+}
+
+/* VENUE & WEATHER MODAL HANDLERS */
+function openVenueModal(eventId) {
+  const ev = stateEvents.find(e => e.id === eventId);
+  if (!ev) return;
+
+  const content = document.getElementById('venue-modal-content');
+  const isCancelled = ev.status === 'Cancelled';
+  const phone = ev.weather?.phone || '(650) 555-0100';
+  const cleanPhone = phone.replace(/[^0-9]/g, '');
+
+  content.innerHTML = `
+    <div style="background:rgba(30,41,59,0.7); border:1px solid var(--border-subtle); border-radius:18px; padding:1.25rem;">
+      <div style="font-size:1.15rem; font-weight:800; color:var(--text-heading); margin-bottom:0.25rem;">${ev.title}</div>
+      <div style="font-size:0.88rem; color:var(--text-muted);">${ev.date} • ${ev.startTime} – ${ev.endTime}</div>
+      <div style="font-size:0.88rem; color:#38BDF8; margin-top:0.4rem; display:flex; align-items:center; gap:0.35rem;">
+        <span class="material-symbols-outlined" style="font-size:1rem;">location_on</span> ${ev.location}
+      </div>
+    </div>
+
+    <div style="background:rgba(16, 185, 129, 0.1); border:1px solid rgba(16, 185, 129, 0.3); border-radius:18px; padding:1.25rem; display:flex; flex-direction:column; gap:0.6rem;">
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:0.5rem;">
+        <span style="font-size:0.8rem; font-weight:800; color:#34D399; text-transform:uppercase; letter-spacing:0.05em;">Weather Prediction</span>
+        <span class="weather-badge ${ev.weather?.rainAlert ? 'rain-alert' : ''}">${ev.weather?.forecast || '☀️ 75°F Clear'}</span>
+      </div>
+      <div style="font-size:0.92rem; color:var(--text-body); line-height:1.5;">
+        <strong>Recommended Weather Prep:</strong> ${ev.weather?.advice || 'Standard weather attire.'}
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:0.85rem; margin-top:0.5rem;">
+      <a href="tel:${cleanPhone}" class="btn-gradient-submit" style="background:var(--cyan-glow); text-decoration:none; text-align:center; display:flex; align-items:center; justify-content:center; gap:0.55rem;">
+        <span class="material-symbols-outlined">call</span> Call Venue Front Desk (${phone})
+      </a>
+
+      ${isCancelled ? `
+        <button class="btn-gradient-submit" style="background:rgba(16,185,129,0.2); border:1px solid #10B981; color:#34D399;" onclick="restoreActivityFromModal('${ev.id}')">
+          🔄 Restore / Un-cancel Activity
+        </button>
+      ` : `
+        <button class="btn-gradient-submit" style="background:rgba(239, 68, 68, 0.2); border:1px solid rgba(239, 68, 68, 0.4); color:#FCA5A5;" onclick="cancelActivityFromModal('${ev.id}')">
+          🌧️ Call & Cancel Activity Due to Weather
+        </button>
+      `}
+    </div>
+  `;
+
+  document.getElementById('venue-modal').classList.add('open');
+  document.getElementById('venue-modal-overlay').classList.add('open');
+}
+
+function closeVenueModal() {
+  document.getElementById('venue-modal').classList.remove('open');
+  document.getElementById('venue-modal-overlay').classList.remove('open');
+}
+
+function cancelActivityFromModal(id) {
+  const ev = stateEvents.find(item => item.id === id);
+  if (ev) {
+    ev.status = 'Cancelled';
+    renderUI();
+    closeVenueModal();
+    toggleAIDrawer(true);
+    sendPrompt(`Cancelled activity "${ev.title}" on ${ev.date} due to weather alert (${ev.weather?.forecast || 'Rain'}).`);
+  }
+}
+
+function restoreActivityFromModal(id) {
+  const ev = stateEvents.find(item => item.id === id);
+  if (ev) {
+    delete ev.status;
+    renderUI();
+    closeVenueModal();
+    toggleAIDrawer(true);
+    sendPrompt(`Restored activity "${ev.title}" on ${ev.date} back to active schedule.`);
   }
 }
 
