@@ -1824,7 +1824,15 @@ function parseA2uiToHtml(text) {
   
   try {
     const data = JSON.parse(jsonStr);
-    const comps = data.components || (Array.isArray(data) ? data : null);
+    let comps = null;
+    if (data.surfaceUpdate && data.surfaceUpdate.components) {
+      comps = data.surfaceUpdate.components;
+    } else if (data.components) {
+      comps = data.components;
+    } else if (Array.isArray(data)) {
+      comps = data;
+    }
+
     if (comps && Array.isArray(comps)) {
       let html = '<div style="display:flex; flex-direction:column; gap:0.5rem; background:rgba(15,23,42,0.6); padding:0.85rem 1rem; border-radius:14px; border:1px solid rgba(255,255,255,0.08);">';
       comps.forEach(c => {
@@ -1834,7 +1842,7 @@ function parseA2uiToHtml(text) {
           const hint = txtObj.usageHint || 'body';
           const inlineHtml = typeof marked !== 'undefined' && marked.parseInline ? marked.parseInline(str) : str;
           
-          if (hint === 'h1' || hint === 'h2' || hint === 'h3') {
+          if (hint === 'h1' || hint === 'h2' || hint === 'h3' || hint === 'h4') {
             html += `<div style="font-weight:800; font-size:1rem; color:#38BDF8; font-family:var(--font-heading); margin-top:0.35rem;">${inlineHtml}</div>`;
           } else if (hint === 'caption') {
             html += `<div style="font-size:0.82rem; color:var(--text-muted); line-height:1.4; padding-left:0.4rem;">${inlineHtml}</div>`;
@@ -1853,7 +1861,7 @@ function parseA2uiToHtml(text) {
 }
 
 function formatMarkdown(text) {
-  if (text && (text.includes('surfaceId') || text.includes('components') || text.includes('<a2ui-json>'))) {
+  if (text && (text.includes('surfaceId') || text.includes('components') || text.includes('surfaceUpdate') || text.includes('<a2ui-json>'))) {
     const parsedA2ui = parseA2uiToHtml(text);
     if (parsedA2ui) return parsedA2ui;
   }
@@ -1949,14 +1957,24 @@ async function handleChatSubmit(e) {
       return;
     }
 
+    let hasRenderedMsg = false;
     data.parts.forEach(p => {
       if (p.kind === 'text') {
         appendMsg('agent', p.text);
+        hasRenderedMsg = true;
         if (text.toLowerCase().includes('brief')) {
           document.getElementById('brief-rendered-content').innerHTML = formatMarkdown(p.text);
         }
+      } else if (p.kind === 'a2ui' && p.data) {
+        const jsonStr = typeof p.data === 'string' ? p.data : JSON.stringify(p.data);
+        appendMsg('agent', jsonStr);
+        hasRenderedMsg = true;
       }
     });
+
+    if (!hasRenderedMsg) {
+      appendMsg('agent', 'Schedule query processed.');
+    }
   } catch (err) {
     pending.textContent = 'Error connecting to KinSync AI: ' + err.message;
   }
