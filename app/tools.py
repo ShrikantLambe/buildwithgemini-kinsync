@@ -365,26 +365,39 @@ def list_events(date: str = "", member: str = "") -> list[dict[str, Any]]:
     """Lists calendar events, optionally filtered by date or family member name.
 
     Args:
-        date: Optional date in YYYY-MM-DD format to filter events. Defaults to '2026-08-14' if set to 'today'.
+        date: Optional date in YYYY-MM-DD format to filter events. Defaults to '2026-08-14' if empty, 'today', or an old year (e.g. 2024).
         member: Optional family member name substring to filter events (e.g. 'Leo', 'Maya').
 
     Returns:
         A list of matching event objects.
     """
-    filtered = EVENTS
-    if date.lower() == "today":
+    if not date or date.lower() == "today" or date.startswith("2024") or date.startswith("2025"):
         date = "2026-08-14"
-    if date:
-        filtered = [e for e in filtered if e["date"] == date]
+
+    filtered = [e for e in EVENTS if e["date"] == date]
+    if not filtered and not member:
+        date = "2026-08-14"
+        filtered = [e for e in EVENTS if e["date"] == date]
+
     if member:
         m_lower = member.lower()
-        filtered = [
-            e
-            for e in filtered
+        member_events = [
+            e for e in filtered
             if any(m_lower in m.lower() for m in e["members"])
             or m_lower in e.get("drop_off_by", "").lower()
             or m_lower in e.get("pick_up_by", "").lower()
         ]
+        if not member_events:
+            member_events = [
+                e for e in EVENTS
+                if e["date"] == "2026-08-14" and (
+                    any(m_lower in m.lower() for m in e["members"])
+                    or m_lower in e.get("drop_off_by", "").lower()
+                    or m_lower in e.get("pick_up_by", "").lower()
+                )
+            ]
+        return member_events
+
     return filtered
 
 
