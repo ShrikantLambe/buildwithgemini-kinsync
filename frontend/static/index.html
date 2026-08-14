@@ -1815,7 +1815,48 @@ function triggerAIBrief() {
 const timeline = document.getElementById('chat-timeline');
 const inputField = document.getElementById('chat-input');
 
+function parseA2uiToHtml(text) {
+  if (!text) return null;
+  let jsonStr = text.trim();
+  if (text.includes('<a2ui-json>')) {
+    jsonStr = text.split('<a2ui-json>')[1].split('</a2ui-json>')[0].trim();
+  }
+  
+  try {
+    const data = JSON.parse(jsonStr);
+    const comps = data.components || (Array.isArray(data) ? data : null);
+    if (comps && Array.isArray(comps)) {
+      let html = '<div style="display:flex; flex-direction:column; gap:0.5rem; background:rgba(15,23,42,0.6); padding:0.85rem 1rem; border-radius:14px; border:1px solid rgba(255,255,255,0.08);">';
+      comps.forEach(c => {
+        const txtObj = c.component?.Text || c.Text;
+        if (txtObj && txtObj.text && txtObj.text.literalString) {
+          const str = txtObj.text.literalString;
+          const hint = txtObj.usageHint || 'body';
+          const inlineHtml = typeof marked !== 'undefined' && marked.parseInline ? marked.parseInline(str) : str;
+          
+          if (hint === 'h1' || hint === 'h2' || hint === 'h3') {
+            html += `<div style="font-weight:800; font-size:1rem; color:#38BDF8; font-family:var(--font-heading); margin-top:0.35rem;">${inlineHtml}</div>`;
+          } else if (hint === 'caption') {
+            html += `<div style="font-size:0.82rem; color:var(--text-muted); line-height:1.4; padding-left:0.4rem;">${inlineHtml}</div>`;
+          } else {
+            html += `<div style="font-size:0.9rem; color:var(--text-body); line-height:1.5;">${inlineHtml}</div>`;
+          }
+        }
+      });
+      html += '</div>';
+      return html;
+    }
+  } catch(e) {
+    // Not valid JSON
+  }
+  return null;
+}
+
 function formatMarkdown(text) {
+  if (text && (text.includes('surfaceId') || text.includes('components') || text.includes('<a2ui-json>'))) {
+    const parsedA2ui = parseA2uiToHtml(text);
+    if (parsedA2ui) return parsedA2ui;
+  }
   if (typeof marked !== 'undefined' && marked.parse) {
     return marked.parse(text);
   }
