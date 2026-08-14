@@ -365,13 +365,15 @@ def list_events(date: str = "", member: str = "") -> list[dict[str, Any]]:
     """Lists calendar events, optionally filtered by date or family member name.
 
     Args:
-        date: Optional date in YYYY-MM-DD format to filter events.
-        member: Optional family member name substring to filter events.
+        date: Optional date in YYYY-MM-DD format to filter events. Defaults to '2026-08-14' if set to 'today'.
+        member: Optional family member name substring to filter events (e.g. 'Leo', 'Maya').
 
     Returns:
         A list of matching event objects.
     """
     filtered = EVENTS
+    if date.lower() == "today":
+        date = "2026-08-14"
     if date:
         filtered = [e for e in filtered if e["date"] == date]
     if member:
@@ -386,15 +388,17 @@ def list_events(date: str = "", member: str = "") -> list[dict[str, Any]]:
     return filtered
 
 
-def detect_conflicts(date: str) -> dict[str, Any]:
+def detect_conflicts(date: str = "2026-08-14") -> dict[str, Any]:
     """Scans the family calendar for a given date to detect double-bookings or missing transport assignments.
 
     Args:
-        date: Date in YYYY-MM-DD format to analyze for conflicts.
+        date: Date in YYYY-MM-DD format to analyze for conflicts. Defaults to '2026-08-14'.
 
     Returns:
         Dictionary containing double_bookings list and missing_transport list.
     """
+    if not date or date.lower() == "today":
+        date = "2026-08-14"
     day_events = [e for e in EVENTS if e["date"] == date]
     double_bookings = []
     missing_transport = []
@@ -440,15 +444,17 @@ def detect_conflicts(date: str) -> dict[str, Any]:
     }
 
 
-def generate_daily_brief(date: str) -> dict[str, Any]:
+def generate_daily_brief(date: str = "2026-08-14") -> dict[str, Any]:
     """Generates a complete daily brief summarizing family schedules, pickup/drop-off logistics, weather forecasts, preparation gear advice, and conflict warnings.
 
     Args:
-        date: Date in YYYY-MM-DD format for the brief.
+        date: Date in YYYY-MM-DD format for the brief. Defaults to '2026-08-14' if omitted or 'today'.
 
     Returns:
         Structured brief object containing timeline, logistics summary, weather predictions, and conflict warnings.
     """
+    if not date or date.lower() == "today":
+        date = "2026-08-14"
     day_events = sorted(
         [e for e in EVENTS if e["date"] == date], key=lambda x: x["start_time"]
     )
